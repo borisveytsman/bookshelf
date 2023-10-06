@@ -18,7 +18,9 @@ push @requiredChars, 0x0410..0x044F;
 push @requiredChars, 0x0451, 0x0454;
 # Ghe, ghe
 push @requiredChars, 0x0490, 0x0491;
-
+if ($opt_d) {
+    print STDERR  join(", ", map(chr, @requiredChars)), "\n";
+}
 # loop over fonts
 while (<>) {
     chomp;
@@ -29,5 +31,9 @@ while (<>) {
     chomp $fontfile;
     if ($opt_d) {
 	print STDERR "Font file $fontfile\n";
+    }
+    my $ranges=`fc-query -f '%{charset}' $fontfile`;
+    if ($opt_d) {
+	print STDERR "Ranges $ranges\n";
     }
 }
