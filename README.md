@@ -5,7 +5,7 @@ We want to use TeX to create book shelves.
 First, we want to create a list of fonts that support Latin and Cyrillic
 
 ``` shell
-./listtexfonts | ./selectfonts.pl > selectedfonts
+./listtexfonts.sh | ./selectfonts.pl > selectedfonts
 ```
 Then we populate `fontsel`
 
@@ -16,5 +16,12 @@ Then we convert the book catalog to `entries.tex`
 
 ``` shell
 ./mkentries.sh > entries.tex
+```
+And then
+
+``` shell
+xelatex covers
+biber covers
+xelatex covers
 ```
 

@@ -69,13 +69,19 @@ sub GetMissingChars {
 
 sub GetRanges {
     my ($font, $debug) = @_;
+    my @ranges;
     my $fontfile = `kpsewhich $font`;
     chomp $fontfile;
+    if (!length($fontfile)) {
+	if ($debug) {
+	    print STDERR "Font $font is not found\n";
+	}
+	return(@ranges)
+    }
     if ($debug) {
 	print STDERR "Font file $fontfile\n";
     }
     my $rangesStr=`fc-query -f '%{charset}' $fontfile`;
-    my @ranges;
     foreach my $range (split /\s+/, $rangesStr) {
 	my ($min, $max) = split /-/, $range;
 	if ($max eq '') {
