@@ -20,10 +20,18 @@ push @requiredChars, 0x0410..0x044F;
 push @requiredChars, 0x0451, 0x0454;
 # Ghe, ghe
 push @requiredChars, 0x0490, 0x0491;
+# interesting otf features.  These are regex patterns
+my @features=('^hist$', '^onum$', '^pcap$', '^smcp$',
+	      '^ss', '^swsh$', '^titl$');
 if ($debug) {
     print STDERR  "Required charecters: ",
 	join(", ", map(chr, @requiredChars)), "\n";
 }
+if ($debug) {
+    print STDERR  "OTF features: ",
+	join(", ", @features), "\n";
+}
+
 # loop over fonts
 while (<>) {
     chomp;
@@ -33,7 +41,7 @@ while (<>) {
     }
     my @missingChars = GetMissingChars($font, \@requiredChars, $debug);
     if (!scalar(@missingChars)) {
-	print($font, "\n");
+	OutputFont($font, \@features, $debug);
     } else {
 	if ($debug) {
 	    print STDERR "Missing characters: ",
@@ -91,4 +99,27 @@ sub GetRanges {
 	push @ranges, [ hex($min), hex($max) ];	
     }
     return @ranges;
+}
+
+sub OutputFont {
+    my ($font, $features, $debug) = @_;
+    if ($debug) {
+	print STDERR "Font with defaults: $font\n";
+    }
+    print "$font\n";
+    my $fontfile = `kpsewhich $font`;
+    chomp $fontfile;
+    open (FEATURES, "otfinfo -f $fontfile |");
+    while (<FEATURES>) {
+	my ($feature,@tmp)=split;
+	foreach my $pattern (@{$features}) {
+	    if ($feature =~ m/$pattern/) {
+		if ($debug) {
+		    print STDERR "Adding +$feature\n";
+		}
+		print "$font $feature\n";
+	    }
+	}
+    }
+    close (FEATURES);
 }
