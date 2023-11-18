@@ -10,9 +10,9 @@ while(<FONTS>) {
     my ($font, $feature) = split;
     open(RES, ">fontsel/$i.tex");
     if (length($feature)) {
-	print RES "\\setfontface{\\SILmfont}{$_}[RawFeature=+$feature]\n";
+	print RES "\\setfontface{\\SILmfont}{$font}[RawFeature=+$feature]\n";
     } else {
-	print RES "\\setfontface{\\SILmfont}{$_}\n";
+	print RES "\\setfontface{\\SILmfont}{$font}\n";
     }
     print RES "\\def\\SILmfontname{$_}\n";
     close RES;
