@@ -5,6 +5,7 @@
 # -d - debug on
 use strict;
 use Getopt::Std;
+use open qw( :std :encoding(UTF-8) );
 our($opt_d);
 getopts('d');
 my $debug=$opt_d;
@@ -20,7 +21,7 @@ push @requiredChars, 0x0451, 0x0454;
 # Ghe, ghe
 push @requiredChars, 0x0490, 0x0491;
 if ($debug) {
-    print STDERR  "Requrired charecters: ",
+    print STDERR  "Required charecters: ",
 	join(", ", map(chr, @requiredChars)), "\n";
 }
 # loop over fonts
@@ -87,7 +88,7 @@ sub GetRanges {
 	if ($max eq '') {
 	    $max=$min;
 	}
-	push @ranges, [ int("0x".$min), int("0x".$max) ];	
+	push @ranges, [ hex($min), hex($max) ];	
     }
     return @ranges;
 }
