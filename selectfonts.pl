@@ -112,6 +112,20 @@ sub OutputFont {
     open (FEATURES, "otfinfo -f $fontfile |");
     while (<FEATURES>) {
 	my ($feature,@tmp)=split;
+	# A bug in Alegreya ss02
+	if ($font =~ m/^Alegreya/ && $feature eq 'ss02') {
+	    if ($debug) {
+		print STDERR "Skipping $font $feature\n";
+	    }
+	    next;
+	}
+	# A bug in Spectral ss04
+	if ($font =~ m/^Spectral/ && $feature eq 'ss04') {
+	    if ($debug) {
+		print STDERR "Skipping $font $feature\n";
+	    }
+	    next;
+	}
 	foreach my $pattern (@{$features}) {
 	    if ($feature =~ m/$pattern/) {
 		if ($debug) {
