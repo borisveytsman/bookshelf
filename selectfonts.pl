@@ -13,11 +13,15 @@ my @requiredChars;
 # Basic latin
 push @requiredChars, 0x0021..0x007E;
 # Yo, Ye
-push @requiredChars, 0x0401, 0x0404;
+#push @requiredChars, 0x0401, 0x0404;
+# Ye
+push @requiredChars, 0x0404;
 # Cyrillic
 push @requiredChars, 0x0410..0x044F;
 # yo, ye
-push @requiredChars, 0x0451, 0x0454;
+#push @requiredChars, 0x0451, 0x0454;
+# ye
+push @requiredChars, 0x0454;
 # Ghe, ghe
 push @requiredChars, 0x0490, 0x0491;
 # interesting otf features.  These are regex patterns
