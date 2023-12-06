@@ -1623,6 +1623,100 @@ Package biblatex Warning: Please (re)run Biber on the file:
   \input{fontsel/\theSIL@fontsel.tex}%
   \typeout{Set in \SILmfontname}%
 %    \end{macrocode}
+%
+% For typesetting title we use an auxillary macro |\SIL@fittext|.  It
+% has four parameters: the text to be typeset, the width ($W$), the
+% height $H$, and the box $W\times H$ to put the text into.  The
+% algorithm is the following:
+% \begin{enumerate}
+% \item We try to typeset the text in the default size (10~pt) in one
+% line. 
+% \item If the line fits in the box, we increase the font size until
+%   either its width or its height hits the limit.
+% \item If the line does not fit in the box, we typeset the text in
+% several lines with |\hsize| equal to $W$.
+% \item If the text height is smaller than $H$, we increase font size.
+% Note that this might change line breaks, so the resulting text
+% either fits in the box, or overfulls it.
+% \item If the text overfulls the box, we start reducing font size by
+% 10\% at each step until it fits.
+% \item After all these steps we have the font size for the best fit
+% of the text.  We typeset the text in the box with the desired font
+% size.  
+% \end{enumerate}
+%
+% First, we calculate $W$ and $H$ are the number of points.
+%    \begin{macrocode}
+\def\SIL@fittext#1#2#3#4{%
+  \def\SIL@fontsize{10}%
+  \@tempdima=#2\relax
+  \edef\SIL@W{\strip@pt\@tempdima}%
+  \@tempdima=#3\relax
+  \edef\SIL@H{\strip@pt\@tempdima}%  
+%    \end{macrocode}
+% Let us see whether we can typeset the text in one line
+%    \begin{macrocode}
+  \setbox#4=\hbox{\fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+    \raggedright\noindent#1}%
+  \@tempdima=\the\wd#4\relax
+  \edef\SIL@textwidthval{\strip@pt\@tempdima}%
+  \FPiflt\SIL@textwidthval\SIL@W
+    \typeout{Text fits into one line}%
+    \FPeval\SIL@expandX{\SIL@W/\SIL@textwidthval}%
+    \@tempdima=\the\dimexpr(\dp#4+\ht#4)%
+    \edef\SIL@textheightval{\strip@pt\@tempdima}%
+    \FPeval\SIL@expandY{\SIL@H/\SIL@textheightval}%
+    \typeout{X expansion: \SIL@expandX, Y expansion: \SIL@expandY}%
+    \FPmin\SIL@expand\SIL@expandX\SIL@expandY
+    \FPeval\SIL@fontsize{\SIL@expand*\SIL@fontsize}%
+    \typeout{Using font size \SIL@fontsize pt}%
+%    \end{macrocode}
+% Now the case of multiline text.
+%    \begin{macrocode}
+  \else
+    \typeout{Text does not fit into one line}%
+    \setbox#4=\vbox{\hsize=#2\relax
+      \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+      \raggedright\noindent#1\vskip0pt}%
+    \@tempdima=\the\dimexpr(\dp#4+\ht#4)%
+    \edef\SIL@textheightval{\strip@pt\@tempdima}%
+%    \end{macrocode}
+% We recalculate (maybe increasing) the font size
+%    \begin{macrocode}
+    \FPeval\SIL@fontsize{\SIL@fontsize*\SIL@H/\SIL@textheightval}%
+    \typeout{Changing font size to \SIL@fontsize pt}%
+    \setbox#4=\vbox{\hsize=#2\relax
+      \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+      \raggedright\noindent#1\vskip0pt}%
+    \@tempdima=\the\dimexpr(\dp#4+\ht#4)\relax%
+    \typeout{Box height \the\@tempdima, we want #3}%
+%    \end{macrocode}
+% And now we decrease the font size step by step
+%    \begin{macrocode}
+    \ifdim\@tempdima>#3\relax
+       \loop
+         \FPeval\SIL@fontsize{\SIL@fontsize*0.9}%
+         \typeout{Changing font size to \SIL@fontsize pt}%
+         \setbox#4=\vbox{\hsize=#2\relax
+           \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+           \raggedright\noindent#1\vskip0pt}%
+         \@tempdima=\the\dimexpr(\dp#4+\ht#4)\relax%
+         \typeout{Box height \the\@tempdima, we want #3}%
+       \ifdim\the\@tempdima>#3\repeat       
+     \fi
+     \typeout{The final value of font size is \SIL@fontsize pt}%
+  \fi
+%    \end{macrocode}
+% And the final typesetting
+%    \begin{macrocode}
+  \setbox#4=\vbox to #3{\hsize=#2\relax
+    \vfill
+    \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+    \raggedright\noindent
+    #1\vfill}%
+}
+%    \end{macrocode}
+%
 % Measure the author width and height at the default
 %       size (10pt). If the author fits in 90\% of the
 %       maximum width of the book, we put it at the top of the
