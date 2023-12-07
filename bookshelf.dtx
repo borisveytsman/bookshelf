@@ -1508,6 +1508,100 @@ Package biblatex Warning: Please (re)run Biber on the file:
 \fboxsep1em\fboxrule.1pt
 \pagestyle{empty}
 %    \end{macrocode}
+%
+% \subsubsection{Auxillary macro: fitting text in a box}
+% For typesetting title we use an auxillary macro |\SIL@fittext|.  It
+% has four parameters: the text to be typeset, the width ($W$), the
+% height $H$, and the box $W\times H$ to put the text into.  The
+% algorithm is the following:
+% \begin{enumerate}
+% \item We try to typeset the text in the default size (10~pt) in one
+% line. 
+% \item If the line fits in the box, we increase the font size until
+%   either its width or its height hits the limit.
+% \item If the line does not fit in the box, we typeset the text in
+% several lines with |\hsize| equal to $W$.
+% \item If the text height is smaller than $H$, we increase font size.
+% Note that this might change line breaks, so the resulting text
+% either fits in the box, or overfulls it.
+% \item If the text overfulls the box, we start reducing font size by
+% 20\% at each step until it fits.
+% \item After all these steps we have the font size for the best fit
+% of the text.  We typeset the text in the box with the desired font
+% size.  
+% \end{enumerate}
+%
+% First, we calculate $W$ and $H$ are the number of points.
+%    \begin{macrocode}
+\def\SIL@fittext#1#2#3#4{%
+  \def\SIL@fontsize{10}%
+  \@tempdima=#2\relax
+  \edef\SIL@W{\strip@pt\@tempdima}%
+  \@tempdima=#3\relax
+  \edef\SIL@H{\strip@pt\@tempdima}%  
+%    \end{macrocode}
+% Let us see whether we can typeset the text in one line
+%    \begin{macrocode}
+  \setbox#4=\hbox{\fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+    \raggedright\noindent#1}%
+  \@tempdima=\the\wd#4\relax
+  \edef\SIL@textwidthval{\strip@pt\@tempdima}%
+  \FPiflt\SIL@textwidthval\SIL@W
+    \typeout{Text fits into one line}%
+    \FPeval\SIL@expandX{\SIL@W/\SIL@textwidthval}%
+    \@tempdima=\the\dimexpr(\dp#4+\ht#4)%
+    \edef\SIL@textheightval{\strip@pt\@tempdima}%
+    \FPeval\SIL@expandY{\SIL@H/\SIL@textheightval}%
+    \typeout{X expansion: \SIL@expandX, Y expansion: \SIL@expandY}%
+    \FPmin\SIL@expand\SIL@expandX\SIL@expandY
+    \FPeval\SIL@fontsize{\SIL@expand*\SIL@fontsize}%
+    \typeout{Using font size \SIL@fontsize pt}%
+%    \end{macrocode}
+% Now the case of multiline text.
+%    \begin{macrocode}
+  \else
+    \typeout{Text does not fit into one line}%
+    \setbox#4=\vbox{\hsize=#2\relax
+      \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+      \raggedright\noindent#1\vskip0pt}%
+    \@tempdima=\the\dimexpr(\dp#4+\ht#4)%
+    \edef\SIL@textheightval{\strip@pt\@tempdima}%
+%    \end{macrocode}
+% We recalculate (maybe increasing) the font size
+%    \begin{macrocode}
+    \FPeval\SIL@fontsize{\SIL@fontsize*\SIL@H/\SIL@textheightval}%
+    \typeout{Changing font size to \SIL@fontsize pt}%
+    \setbox#4=\vbox{\hsize=#2\relax
+      \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+      \raggedright\noindent#1\vskip0pt}%
+    \@tempdima=\the\dimexpr(\dp#4+\ht#4)\relax%
+    \typeout{Box height \the\@tempdima, we want #3}%
+%    \end{macrocode}
+% And now we decrease the font size step by step
+%    \begin{macrocode}
+    \ifdim\@tempdima>#3\relax
+       \loop
+         \FPeval\SIL@fontsize{\SIL@fontsize*0.8}%
+         \typeout{Changing font size to \SIL@fontsize pt}%
+         \setbox#4=\vbox{\hsize=#2\relax
+           \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+           \raggedright\noindent#1\vskip0pt}%
+         \@tempdima=\the\dimexpr(\dp#4+\ht#4)\relax%
+         \typeout{Box height \the\@tempdima, we want #3}%
+       \ifdim\the\@tempdima>#3\repeat       
+     \fi
+     \typeout{The final value of font size is \SIL@fontsize pt}%
+  \fi
+%    \end{macrocode}
+% And the final typesetting
+%    \begin{macrocode}
+  \setbox#4=\vbox to #3{\hsize=#2\relax
+    \vfill
+    \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+    \raggedright\noindent
+    #1\vfill}%
+}
+%    \end{macrocode}
 % \subsubsection{Making the book}\label{mb}
 % The {\ttfamily{}\textbackslash{}makebook} macro is huge, and
 %     handles all the detail of making a book spine. It takes
@@ -1624,98 +1718,6 @@ Package biblatex Warning: Please (re)run Biber on the file:
   \typeout{Set in \SILmfontname}%
 %    \end{macrocode}
 %
-% For typesetting title we use an auxillary macro |\SIL@fittext|.  It
-% has four parameters: the text to be typeset, the width ($W$), the
-% height $H$, and the box $W\times H$ to put the text into.  The
-% algorithm is the following:
-% \begin{enumerate}
-% \item We try to typeset the text in the default size (10~pt) in one
-% line. 
-% \item If the line fits in the box, we increase the font size until
-%   either its width or its height hits the limit.
-% \item If the line does not fit in the box, we typeset the text in
-% several lines with |\hsize| equal to $W$.
-% \item If the text height is smaller than $H$, we increase font size.
-% Note that this might change line breaks, so the resulting text
-% either fits in the box, or overfulls it.
-% \item If the text overfulls the box, we start reducing font size by
-% 10\% at each step until it fits.
-% \item After all these steps we have the font size for the best fit
-% of the text.  We typeset the text in the box with the desired font
-% size.  
-% \end{enumerate}
-%
-% First, we calculate $W$ and $H$ are the number of points.
-%    \begin{macrocode}
-\def\SIL@fittext#1#2#3#4{%
-  \def\SIL@fontsize{10}%
-  \@tempdima=#2\relax
-  \edef\SIL@W{\strip@pt\@tempdima}%
-  \@tempdima=#3\relax
-  \edef\SIL@H{\strip@pt\@tempdima}%  
-%    \end{macrocode}
-% Let us see whether we can typeset the text in one line
-%    \begin{macrocode}
-  \setbox#4=\hbox{\fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
-    \raggedright\noindent#1}%
-  \@tempdima=\the\wd#4\relax
-  \edef\SIL@textwidthval{\strip@pt\@tempdima}%
-  \FPiflt\SIL@textwidthval\SIL@W
-    \typeout{Text fits into one line}%
-    \FPeval\SIL@expandX{\SIL@W/\SIL@textwidthval}%
-    \@tempdima=\the\dimexpr(\dp#4+\ht#4)%
-    \edef\SIL@textheightval{\strip@pt\@tempdima}%
-    \FPeval\SIL@expandY{\SIL@H/\SIL@textheightval}%
-    \typeout{X expansion: \SIL@expandX, Y expansion: \SIL@expandY}%
-    \FPmin\SIL@expand\SIL@expandX\SIL@expandY
-    \FPeval\SIL@fontsize{\SIL@expand*\SIL@fontsize}%
-    \typeout{Using font size \SIL@fontsize pt}%
-%    \end{macrocode}
-% Now the case of multiline text.
-%    \begin{macrocode}
-  \else
-    \typeout{Text does not fit into one line}%
-    \setbox#4=\vbox{\hsize=#2\relax
-      \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
-      \raggedright\noindent#1\vskip0pt}%
-    \@tempdima=\the\dimexpr(\dp#4+\ht#4)%
-    \edef\SIL@textheightval{\strip@pt\@tempdima}%
-%    \end{macrocode}
-% We recalculate (maybe increasing) the font size
-%    \begin{macrocode}
-    \FPeval\SIL@fontsize{\SIL@fontsize*\SIL@H/\SIL@textheightval}%
-    \typeout{Changing font size to \SIL@fontsize pt}%
-    \setbox#4=\vbox{\hsize=#2\relax
-      \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
-      \raggedright\noindent#1\vskip0pt}%
-    \@tempdima=\the\dimexpr(\dp#4+\ht#4)\relax%
-    \typeout{Box height \the\@tempdima, we want #3}%
-%    \end{macrocode}
-% And now we decrease the font size step by step
-%    \begin{macrocode}
-    \ifdim\@tempdima>#3\relax
-       \loop
-         \FPeval\SIL@fontsize{\SIL@fontsize*0.9}%
-         \typeout{Changing font size to \SIL@fontsize pt}%
-         \setbox#4=\vbox{\hsize=#2\relax
-           \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
-           \raggedright\noindent#1\vskip0pt}%
-         \@tempdima=\the\dimexpr(\dp#4+\ht#4)\relax%
-         \typeout{Box height \the\@tempdima, we want #3}%
-       \ifdim\the\@tempdima>#3\repeat       
-     \fi
-     \typeout{The final value of font size is \SIL@fontsize pt}%
-  \fi
-%    \end{macrocode}
-% And the final typesetting
-%    \begin{macrocode}
-  \setbox#4=\vbox to #3{\hsize=#2\relax
-    \vfill
-    \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
-    \raggedright\noindent
-    #1\vfill}%
-}
-%    \end{macrocode}
 %
 % Measure the author width and height at the default
 %       size (10pt). If the author fits in 90\% of the
@@ -1747,34 +1749,6 @@ Package biblatex Warning: Please (re)run Biber on the file:
   \else
     \typeout{Author won't fit in .9 of
              \the\SIL@maxbookwidth}%
-  \fi
-%    \end{macrocode}
-% Now measure the title, with an em rule and the
-%       author if it hasn't been assigned to the top of the
-%       spine.\par
-%    \begin{macrocode}
-  \settowidth{\SIL@titlewidth}{%
-              \SILmfont\citetitle{#1}}%
-  \ifdim\SIL@titlewidth=0pt
-    \typeout{WARNING title width for entry "#1" 
-      set in \SILmfontname=0pt!}%
-    \typeout{Likely that the entry has faulty
-      syntax or a bogus title field}%
-    \typeout{or a BiBTeX management or 
-      crossref setting is being misinterpreted.}%
-    \typeout{I can't go any further until you
-      fix this, sorry}%
-    \end{document}%
-  \fi
-  \ifSIL@topauthor
-    \typeout{Title width: \the\SIL@titlewidth}%
-  \else
-    \addtolength{\SIL@titlewidth}{%
-                 \widthof{\SILmfont~~—~~}}%
-    \addtolength{\SIL@titlewidth}{%
-                 \SIL@authorwidth}%
-    \typeout{Title width with em rule and author:
-      \the\SIL@titlewidth}%
   \fi
 %    \end{macrocode}
 % We now have enough data to make a shot at the
@@ -1815,94 +1789,6 @@ Package biblatex Warning: Please (re)run Biber on the file:
            \the\SIL@bookwidth}%
   \fi
 %    \end{macrocode}
-% See how the title will fit the space: if it's
-%       smaller, it will fit on one line, but we scale it up so
-%       it occupies more of the space available. To do this, we
-%       perform fixed-point arithmetic on the space it takes and
-%       the space available, and use the resulting decimal
-%       fraction later to scale the title. However, if the value
-%       resulting is greater than four, set it to four,
-%       otherwise the title will be too big to fit. The value
-%       four was obtained by inspection and trial and
-%       error.\par
-%    \begin{macrocode}
-  \ifdim\SIL@titlewidth<\SIL@heightfortitle
-    \typeout{Titling fits in
-             \the\SIL@heightfortitle}%
-    \SIL@titleonelinetrue
-    \edef\titleval{\strip@pt\SIL@titlewidth}%
-    \edef\heightval{\strip@pt\SIL@heightfortitle}%
-    \FPeval\SIL@scaledtitle{\heightval/\titleval}%
-    \typeout{Scaling 1-line title by
-             \SIL@scaledtitle}%
-    \expandafter\SIL@scaleint
-                \SIL@scaledtitle\sentinel
-    \ifnum\c@SIL@scale>4
-      \gdef\SIL@scaledtitle{4}%
-      \typeout{Resetting scale \theSIL@scale\ to
-               \SIL@scaledtitle}%
-    \fi
-%    \end{macrocode}
-% Otherwise (too long) the title needs to be set in a
-%       box as a multi-line title. This gets complicated:\par
-% \begin{enumerate}
-% \item set the title in a {\ttfamily{}\textbackslash{}vbox} and
-%   then add the height and depth it occupies to get the
-%   height of the set title;
-% \item if that height is more than the width of the
-% book, use the method above to divide the available
-% height by the [over]used height and use that to reduce
-% the point size by deducting it from 10 (points);
-% \item otherwise (the multiline title fits in the width
-% of the book), do the reverse and increase the point
-% size to take advantage of the extra space by adding it
-% to 10pt.\par
-% \end{enumerate}
-%    \begin{macrocode}
-  \else
-    \typeout{Titling won't fit
-             \the\SIL@heightfortitle}%
-    \SIL@titleonelinefalse
-    \setbox\SIL@titlebox=\vbox{%
-      \hsize\SIL@heightfortitle
-      \SILmfont\raggedright
-      \vrule height1em width0pt
-      \bfseries\citetitle{#1}%
-      \vrule depth.2em width0pt
-    }%
-    \setlength{\SIL@titleheight}%
-              {\ht\SIL@titlebox + \dp\SIL@titlebox}%
-    \typeout{Multiline title takes
-             \the\SIL@titleheight}%
-    \ifdim\SIL@titleheight>\SIL@bookwidth
-      \typeout{Height of title
-               \the\SIL@titleheight\
-               is greater than
-               \the\SIL@bookwidth}%
-      \edef\titleval{\strip@pt\SIL@titleheight}%
-      \edef\heightval{\strip@pt\SIL@bookwidth}%
-      \FPeval\SIL@scaledtitle
-          {10 - \heightval / \titleval}%
-      \typeout{10 - \heightval\ ÷ \titleval\
-               = \SIL@scaledtitle}%
-      \typeout{Using smaller font \SIL@scaledtitle
-               pt for multiline title}%
-    \else
-      \typeout{Height of title
-               \the\SIL@titleheight\
-               is less than
-               \the\SIL@bookwidth}%
-      \edef\titleval{\strip@pt\SIL@titleheight}%
-      \edef\heightval{\strip@pt\SIL@bookwidth}%
-      \FPeval\SIL@scaledtitle
-          {10 + \heightval / \titleval}%
-      \typeout{10 + \heightval\ ÷ \titleval\
-               = \SIL@scaledtitle}%
-      \typeout{Using larger font \SIL@scaledtitle
-               pt for multiline title}%
-    \fi
-  \fi
-%    \end{macrocode}
 % Finally, set a {\ttfamily{}\textbackslash{}vbox} to the
 %       defined width \emph{less} the space
 %       occupied by the {\ttfamily{}\textbackslash{}fcolorbox} border and
@@ -1929,51 +1815,19 @@ Package biblatex Warning: Please (re)run Biber on the file:
         \SILmfont\color{\SIL@fgcol}%
         \citefullauthor{#1}%
         \par\vfill
-        \rotatebox{90}{\vbox to\SIL@bookwidth{%
-            \hsize\SIL@heightfortitle
-          \null\vfill
-          \typeout{Title in a vbox to
-                   \the\SIL@bookwidth,
-                   hsize=\the\SIL@heightfortitle}%
-          \raggedright\color{\SIL@fgcol}%
-          \ifSIL@titleoneline
-            \scalebox{\SIL@scaledtitle}%
-                     {\bfseries\citetitle{#1}}%
-          \else
-            \fontsize{\SIL@scaledtitle}%
-                     {\SIL@scaledtitle}\selectfont
-            \bfseries\citetitle{#1}%
-          \fi
-          \par\vfill}%
+        \SIL@fittext{\color{\SIL@fgcol}\SILmfont
+          \bfseries\citetitle{#1}}{\SIL@heightfortitle}{\SIL@bookwidth}%
+        {\SIL@titlebox}%
+        \rotatebox{90}{\box\SIL@titlebox}%
         }%
-      }%
     \else
       \typeout{Setting author inline to title}%
       \vbox to\SIL@bookheight{\hsize\SIL@bookwidth
-        \typeout{Spine is a vbox to
-                 \the\SIL@bookheight,
-                 hsize=\the\SIL@bookwidth}%
-        \centering
-        \SILmfont\color{\SIL@fgcol}%
-        \rotatebox{90}{\vbox to\SIL@bookwidth{%
-            \hsize\SIL@heightfortitle
-          \null\vfill
-          \typeout{Title and author in a vbox to
-                   \the\SIL@bookwidth,
-                   hsize=\the\SIL@heightfortitle}%
-          \raggedright\color{\SIL@fgcol}%
-          \ifSIL@titleoneline
-            \scalebox{\SIL@scaledtitle}%
-                     {{\bfseries\citetitle{#1}}\quad
-                       —\ \ \citefullauthor{#1}}%
-          \else
-            \fontsize{\SIL@scaledtitle}%
-                     {\SIL@scaledtitle}\selectfont
-                     {\bfseries\citetitle{#1}}\quad
-                     —\ \ \citefullauthor{#1}%
-          \fi
-          \par\vfill}%
-        }%
+        \SIL@fittext{\color{\SIL@fgcol}\SILmfont
+          {\bfseries\citetitle{#1}}\quad
+          ---\quad\citefullauthor{#1}}{\SIL@bookheight}{\SIL@bookwidth}%
+        {\SIL@titlebox}%
+        \rotatebox{90}{\box\SIL@titlebox}%
       }%
     \fi
   }%
@@ -1987,12 +1841,12 @@ Package biblatex Warning: Please (re)run Biber on the file:
 %       space is creeping in somewhere, so the final negative
 %       kern removes it.\par
 %    \begin{macrocode}
-  \\\fboxsep0pt\fboxrule0pt
+  \\\fboxsep0pt\fboxrule0pt%
   \colorbox{BurlyWood}{\hbox to\hsize{%
       \hfil\vrule height3mm depth6mm width0pt
       \normalfont\scriptsize\theSIL@fontsel\hfil}}%
-  }%
-\kern-2.2mm}%
+   }%
+\kern-2.2mm}
 %    \end{macrocode}
 % \end{CPK@macro}
 % \begin{CPK@macro}{\DeclareCiteCommand}\label{fields}
