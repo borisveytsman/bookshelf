@@ -1510,98 +1510,110 @@ Package biblatex Warning: Please (re)run Biber on the file:
 %    \end{macrocode}
 %
 % \subsubsection{Auxillary macro: fitting text in a box}
+%
 % For typesetting title we use an auxillary macro |\SIL@fittext|.  It
 % has four parameters: the text to be typeset, the width ($W$), the
-% height $H$, and the box $W\times H$ to put the text into.  The
-% algorithm is the following:
+% height $H$, and the box $W\times H$ to put the text into.  We want
+% to get the maximal font size that still fits in the box.
+% Unfortunately there is a limitation on the maximal number of fonts
+% \TeX\ can handle (currently 9000 by default).  Since each size
+% change counts as a new font, things can quickly go out of hand.
+% Therefore instead of scaling the font we scale the box.
+%
+% So our aim is to find the maximal scaling factor $S$ such as (1)~the
+% text is typeset in a $w\times h$ box, (2)~the text box scales to the
+% given width, $W=Sw$, (3)~the text box does not overflow the height,
+% $H\le Sh$.
+%
+% The algorithm is the following:
 % \begin{enumerate}
-% \item We try to typeset the text in the default size (10~pt) in one
-% line. 
-% \item If the line fits in the box, we increase the font size until
-%   either its width or its height hits the limit.
-% \item If the line does not fit in the box, we typeset the text in
-% several lines with |\hsize| equal to $W$.
-% \item If the text height is smaller than $H$, we increase font size.
-% Note that this might change line breaks, so the resulting text
-% either fits in the box, or overfulls it.
-% \item If the text overfulls the box, we start reducing font size by
-% 20\% at each step until it fits.
-% \item After all these steps we have the font size for the best fit
-% of the text.  We typeset the text in the box with the desired font
-% size.  
+% \item If the text fits in one line, we expand the box for the line
+% to occupy $W$, setting $S=W/w$.
+% \item Otherwise, we try to typeset the text in the box of horizontal
+%   size $W$ ($S=1$) and calculate box height $h$. We determine how
+%   much we can expand or shrink the box, setting $S=H/h$. Actually
+%   $S>4$ leads to ugly results, so $S=\min(H/h,4)$.
+% \item We typeset the text in the box of width $w=W/S$.
+% \item Due to changed line breaks its height $h$ might be higher than
+% $H/S$. In this case we start to decrease $S$ by 5\% on each step
+% and repeat typesetting until $w\le W/S$
 % \end{enumerate}
 %
-% First, we calculate $W$ and $H$ are the number of points.
+% Now, the implementation.
+%
+% First, we calculate $W$ and $H$ by stripping the pt dimension
 %    \begin{macrocode}
 \def\SIL@fittext#1#2#3#4{%
-  \def\SIL@fontsize{10}%
   \@tempdima=#2\relax
   \edef\SIL@W{\strip@pt\@tempdima}%
   \@tempdima=#3\relax
   \edef\SIL@H{\strip@pt\@tempdima}%  
 %    \end{macrocode}
-% Let us see whether we can typeset the text in one line
+% Try to set up the text in one line
 %    \begin{macrocode}
-  \setbox#4=\hbox{\fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
-    \raggedright\noindent#1}%
-  \@tempdima=\the\wd#4\relax
-  \edef\SIL@textwidthval{\strip@pt\@tempdima}%
-  \FPiflt\SIL@textwidthval\SIL@W
-    \typeout{Text fits into one line}%
-    \FPeval\SIL@expandX{\SIL@W/\SIL@textwidthval}%
-    \@tempdima=\the\dimexpr(\dp#4+\ht#4)%
-    \edef\SIL@textheightval{\strip@pt\@tempdima}%
-    \FPeval\SIL@expandY{\SIL@H/\SIL@textheightval}%
-    \typeout{X expansion: \SIL@expandX, Y expansion: \SIL@expandY}%
-    \FPmin\SIL@expand\SIL@expandX\SIL@expandY
-    \FPeval\SIL@fontsize{\SIL@expand*\SIL@fontsize}%
-    \typeout{Using font size \SIL@fontsize pt}%
-%    \end{macrocode}
-% Now the case of multiline text.
-%    \begin{macrocode}
+  \setbox#4=\hbox{\raggedright\noindent#1}%
+  \@tempdima=\wd#4\relax
+  \edef\SIL@w{\strip@pt\@tempdima}%
+  \ifdim#2>\@tempdima\relax
+    \FPeval\SIL@S{\SIL@W/\SIL@w}%
+    \typeout{Text fits in one line: have H=\SIL@w pt, want \SIL@W pt}%
+    \typeout{Trying S=\SIL@S}%
   \else
-    \typeout{Text does not fit into one line}%
-    \setbox#4=\vbox{\hsize=#2\relax
-      \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
-      \raggedright\noindent#1\vskip0pt}%
-    \@tempdima=\the\dimexpr(\dp#4+\ht#4)%
-    \edef\SIL@textheightval{\strip@pt\@tempdima}%
 %    \end{macrocode}
-% We recalculate (maybe increasing) the font size
+% We start with the scale factor $S=1$.  We add |\vskip0pt$ to the
+% text to set the box depth to zero.
 %    \begin{macrocode}
-    \FPeval\SIL@fontsize{\SIL@fontsize*\SIL@H/\SIL@textheightval}%
-    \typeout{Changing font size to \SIL@fontsize pt}%
-    \setbox#4=\vbox{\hsize=#2\relax
-      \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
+    \typeout{Text does not fit in one line}%
+    \def\SIL@S{1}%
+    \FPeval\SIL@w{\SIL@W/\SIL@S}%
+    \setbox#4=\vbox{\hsize=\SIL@w pt\relax      
       \raggedright\noindent#1\vskip0pt}%
-    \@tempdima=\the\dimexpr(\dp#4+\ht#4)\relax%
-    \typeout{Box height \the\@tempdima, we want #3}%
-%    \end{macrocode}
-% And now we decrease the font size step by step
-%    \begin{macrocode}
-    \ifdim\@tempdima>#3\relax
-       \loop
-         \FPeval\SIL@fontsize{\SIL@fontsize*0.8}%
-         \typeout{Changing font size to \SIL@fontsize pt}%
-         \setbox#4=\vbox{\hsize=#2\relax
-           \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
-           \raggedright\noindent#1\vskip0pt}%
-         \@tempdima=\the\dimexpr(\dp#4+\ht#4)\relax%
-         \typeout{Box height \the\@tempdima, we want #3}%
-       \ifdim\the\@tempdima>#3\repeat       
-     \fi
-     \typeout{The final value of font size is \SIL@fontsize pt}%
+    \@tempdima=\ht#4\relax
+    \edef\SIL@h{\strip@pt\@tempdima}%
+    \@tempdima = \SIL@S \@tempdima\relax
+    \typeout{Trying S=\SIL@S.  Got H=\the\@tempdima.  Want \SIL@H pt}%
+    \FPeval\SIL@S{\SIL@H/\SIL@h}%
+    \FPmin\SIL@S\SIL@S{4}%
   \fi
+%    \end{macrocode}
+% Rescaling the box for the first time
+%   \begin{macrocode}
+  \FPeval\SIL@w{\SIL@W/\SIL@S}%
+  \setbox#4=\vbox{\hsize=\SIL@w pt\relax      
+    \raggedright\noindent#1\vskip0pt}%
+  \@tempdima=\ht#4\relax
+  \edef\SIL@h{\strip@pt\@tempdima}%
+  \@tempdima = \SIL@S \@tempdima\relax
+  \typeout{Trying S=\SIL@S.  Got H=\the\@tempdima.  Want \SIL@H pt}%
+%    \end{macrocode}
+% If the text does not fit, keep reducing it by 5\% at a type
+%   \begin{macrocode}
+  \ifdim\@tempdima>#3\relax
+    \loop
+      \FPeval\SIL@S{0.95*\SIL@S}%
+      \FPeval\SIL@w{\SIL@W/\SIL@S}%
+      \setbox#4=\vbox{\hsize=\SIL@w pt\relax      
+        \raggedright\noindent#1\vskip0pt}%
+      \@tempdima=\ht#4\relax
+      \edef\SIL@h{\strip@pt\@tempdima}%
+      \@tempdima = \SIL@S \@tempdima\relax
+      \typeout{Trying S=\SIL@S.  Got H=\the\@tempdima.  Want \SIL@H pt}%
+    \ifdim\@tempdima>#3\repeat
+  \fi    
 %    \end{macrocode}
 % And the final typesetting
 %    \begin{macrocode}
   \setbox#4=\vbox to #3{\hsize=#2\relax
     \vfill
-    \fontsize{\SIL@fontsize pt}{\SIL@fontsize pt}\selectfont
-    \raggedright\noindent
-    #1\vfill}%
+    \noindent
+    \scalebox{\SIL@S}{\vbox{\hsize=\SIL@w pt\relax      
+        \raggedright\noindent#1\vskip0pt}}%
+    \vfill}%
 }
 %    \end{macrocode}
+% 
+%
+%
 % \subsubsection{Making the book}\label{mb}
 % The {\ttfamily{}\textbackslash{}makebook} macro is huge, and
 %     handles all the detail of making a book spine. It takes
@@ -1816,7 +1828,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
         \citefullauthor{#1}%
         \par\vfill
         \SIL@fittext{\color{\SIL@fgcol}\SILmfont
-          \bfseries\citetitle{#1}}{\SIL@heightfortitle}{\SIL@bookwidth}%
+          \citetitle{#1}}{\SIL@heightfortitle}{\SIL@bookwidth}%
         {\SIL@titlebox}%
         \rotatebox{90}{\box\SIL@titlebox}%
         }%
@@ -1824,7 +1836,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
       \typeout{Setting author inline to title}%
       \vbox to\SIL@bookheight{\hsize\SIL@bookwidth
         \SIL@fittext{\color{\SIL@fgcol}\SILmfont
-          {\bfseries\citetitle{#1}}\quad
+          \citetitle{#1}\quad
           ---\quad\citefullauthor{#1}}{\SIL@bookheight}{\SIL@bookwidth}%
         {\SIL@titlebox}%
         \rotatebox{90}{\box\SIL@titlebox}%
@@ -1846,7 +1858,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
       \hfil\vrule height3mm depth6mm width0pt
       \normalfont\scriptsize\theSIL@fontsel\hfil}}%
    }%
-\kern-2.2mm}
+\kern-2.4mm}
 %    \end{macrocode}
 % \end{CPK@macro}
 % \begin{CPK@macro}{\DeclareCiteCommand}\label{fields}

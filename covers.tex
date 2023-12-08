@@ -5,18 +5,12 @@
 \documentclass[landscape]{bookshelf}
 \addbibresource{books.bib}
 \defaultfontfeatures{Ligatures=TeX}
-\setmainfont{MinionPro-Regular.otf}[
-ItalicFont=MinionPro-It.otf,
-BoldFont=MinionPro-Bold.otf]
 \renewcommand*{\finalnamedelim}{%
   \ifnumgreater{\value{liststop}}{2}{\finalandcomma}{}%
   \addspace\&\space}
 \begin{document}\raggedright
-%%\immediate\write18{./prepdata.sh}
 \input{entries.tex}
 \nocite{*}
-%\par\vfill\clearpage
-%\printbibliography
 \end{document}
 
 
