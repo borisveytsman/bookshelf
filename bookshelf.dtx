@@ -1531,8 +1531,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
 % to occupy $W$, setting $S=W/w$.
 % \item Otherwise, we try to typeset the text in the box of horizontal
 %   size $W$ ($S=1$) and calculate box height $h$. We determine how
-%   much we can expand or shrink the box, setting $S=H/h$. Actually
-%   $S>4$ leads to ugly results, so $S=\min(H/h,4)$.
+%   much we can expand or shrink the box, setting $S=H/h$. 
 % \item We typeset the text in the box of width $w=W/S$.
 % \item Due to changed line breaks its height $h$ might be higher than
 % $H/S$. In this case we start to decrease $S$ by 5\% on each step
@@ -1573,7 +1572,6 @@ Package biblatex Warning: Please (re)run Biber on the file:
     \@tempdima = \SIL@S \@tempdima\relax
     \typeout{Trying S=\SIL@S.  Got H=\the\@tempdima.  Want \SIL@H pt}%
     \FPeval\SIL@S{\SIL@H/\SIL@h}%
-    \FPmin\SIL@S\SIL@S{4}%
   \fi
 %    \end{macrocode}
 % Rescaling the box for the first time
