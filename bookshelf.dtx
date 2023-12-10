@@ -1617,6 +1617,62 @@ Package biblatex Warning: Please (re)run Biber on the file:
 % \end{CPK@macro}
 %
 %
+% \subsubsection{Selecting the font for the book}\label{fontsel}
+%
+% In a multilingual library some books can be typeset only in specific
+% fonts. Here we randomly select a font to typeset the given book.
+%
+% We define a macro that checks whether the given string can be
+% typeset in the font just defined by fontspec.
+%
+% We write the program in expl3 syntax because it has nice mapping
+% subroutines and becasue fontspec internal variables are in expl3.
+% 
+%    \begin{macrocode}
+\ExplSyntaxOn
+%    \end{macrocode}
+% An auxillary routine checking whether the character can be typeset
+% with the current font.  Copied from fontspec internals
+%    \begin{macrocode}
+\prg_new_conditional:Nnn \__SIL_primitive_font_glyph_if_exists:n  {TF,F}
+  {
+    \tex_iffontchar:D \l_fontspec_font `#1 \scan_stop:
+      \prg_return_true:
+    \else:
+      \prg_return_false:
+    \fi:
+  }
+%    \end{macrocode}
+% And the document command
+%    \begin{macrocode}
+\prg_new_conditional:Nnn \__SIL_can_typeset:n {TF}
+  {  
+   \typeout{Trying ~ to ~ typeset ~ #1}
+    \bool_set_true:N \l_tmpa_bool
+    \str_map_inline:nn {#1} {
+      \__SIL_primitive_font_glyph_if_exists:nTF {##1} {}{
+        \bool_set_false:N \l_tmpa_bool
+        \typeout{Cannot ~ typeset ~ ##1}
+        \str_map_break:
+      }
+    }
+    \bool_if:nTF \l_tmpa_bool {\prg_return_true:} {\prg_return_false:}
+}
+
+\cs_generate_variant:Nn \__SIL_can_typeset:nTF {x}
+
+\NewDocumentCommand\CanTypesetTF { m m m}{
+  \__SIL_can_typeset:xTF{#1}{#2}{#3}
+}
+\ExplSyntaxOff
+%    \end{macrocode}
+%
+% We define some counters and flags for the font selection
+%    \begin{macrocode}
+\def\SIL@maxfonttries{20}
+\newif\ifSIL@fontfound
+%    \end{macrocode}
+%
 % \subsubsection{Making the book}\label{mb}
 % The {\ttfamily{}\textbackslash{}makebook} macro is huge, and
 %     handles all the detail of making a book spine. It takes
@@ -1733,8 +1789,25 @@ Package biblatex Warning: Please (re)run Biber on the file:
 %       {\ttfamily{}\textbackslash{}SILmfontname} as the name (for the
 %       same reason).\par
 %    \begin{macrocode}
-  \setrannum{\c@SIL@fontsel}{1}{\c@SIL@maxfont}%
-  \input{fontsel/\theSIL@fontsel.tex}%
+  \c@SIL@loopcount=1\relax
+  \extractcitetext{#1}%
+  \loop
+    \setrannum{\c@SIL@fontsel}{1}{\c@SIL@maxfont}%
+    \input{fontsel/\theSIL@fontsel.tex}\unskip%
+    \typeout{Trying \SILmfontname}%
+    \CanTypesetTF{\extractcitetextresult}{\global
+      \SIL@fontfoundtrue}{\global
+      \SIL@fontfoundfalse}%
+    \ifSIL@fontfound
+      \c@SIL@loopcount=\SIL@maxfonttries\relax
+    \else
+      \addtocounter{SIL@loopcount}{1}%
+    \fi
+  \ifnum\c@SIL@loopcount<\SIL@maxfonttries\repeat
+  \ifSIL@fontfound\else
+     \typeout{Did not find font.  Bailing out with the default}%
+     \input{fontsel/0.tex}\unskip%
+  \fi
   \typeout{Set in \SILmfontname}%
 %    \end{macrocode}
 %
@@ -1866,7 +1939,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
       \hfil\vrule height3mm depth6mm width0pt
       \normalfont\scriptsize\theSIL@fontsel\hfil}}%
    }%
-\kern-2.4mm}
+\kern-0.1mm}
 %    \end{macrocode}
 % \end{CPK@macro}
 % \begin{CPK@macro}{\DeclareCiteCommand}\label{fields}
@@ -1914,6 +1987,25 @@ Package biblatex Warning: Please (re)run Biber on the file:
 \def\emdash{~--- }
 %    \end{macrocode}
 % \end{CPK@macro}
+%
+% To check whether we can typeset book title and authors in the given
+% font, we need to extract textual information.
+%    \begin{macrocode}
+\DeclareCiteCommand\extractcitetext{}{%
+  \xdef\extractcitetextresult{\thefield{title} \thefield{usera}}}{}{}
+%    \end{macrocode}
+%
+% We tell biber to collect the author info
+%    \begin{macrocode}
+ \DeclareSourcemap{%
+   \maps{%
+     \map{%
+       \step[fieldsource=author]
+       \step[fieldset=rawauthor, origfieldval]
+       \step[fieldsource=rawauthor, fieldtarget=usera]
+       }}}
+%    \end{macrocode}
+% And the command itself
 % \iffalse
 %</class>
 % \fi

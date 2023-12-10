@@ -22,8 +22,8 @@ If we want to use all fonts, then
 In this case we need `0.tex` file with reasonable default font, for example
 
 ``` tex
-\setfontface{\SILmfont}{NotoSerif-Medium.ttf}[RawFeature=+onum]
-\def\SILmfontname{NotoSerif-Medium.ttf onum}
+\setfontface{\SILmfont}{NotoSerif-Medium.ttf}[RawFeature=+onum]%
+\def\SILmfontname{NotoSerif-Medium.ttf onum}%
 ```
 
 Then we convert the book catalog to `entries.tex`
