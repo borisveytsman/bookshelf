@@ -1,6 +1,11 @@
 #!/usr/bin/env perl
+#
+# Usage ./mkfontsel FILE
+#
 use strict;
-open(FONTS, "selectedfonts");
+`mkdir -p fontsel`;
+my $file = shift;    
+open(FONTS, $file);
 my $i=1;
 while(<FONTS>) {
     chomp;
