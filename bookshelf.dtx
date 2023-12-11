@@ -1822,7 +1822,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
       \expandafter\c@SIL@fontsel\ReuseFont\relax
     \fi
     \input{fontsel/\theSIL@fontsel.tex}\unskip%
-    \typeout{Trying \SILmfontname}%
+    \typeout{Trying \SILmfontname, attempt \the\c@SIL@loopcount}%
     \CanTypesetTF{\extractcitetextresult}{\global
       \SIL@fontfoundtrue}{\global
       \SIL@fontfoundfalse}%
