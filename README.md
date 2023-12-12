@@ -17,7 +17,7 @@ If we want to use all fonts, then
 
 ``` shell
 ./listtexfonts.sh   | ./listfontsfeatures.pl -d -x excluded_patterns -p otf_patterns > allfonts
-./mkdontsel.pl selectedfonts
+./mkdontsel.pl allfonts
 ```
 In this case we need `0.tex` file with reasonable default font, for example
 
