@@ -1793,9 +1793,9 @@ Package biblatex Warning: Please (re)run Biber on the file:
   \def\SIL@fgcol{\SIL@svgcolname{%
       \theSIL@fgcolno}}%
   \ifnum\c@SIL@loopcount>\c@SIL@maxloop
-    \typeout{Using default colors after \the\c@SIL@maxloop~attempts}%
+    \typeout{Using default colors after \the\c@SIL@maxloop\space attempts}%
     \def\SIL@bgcol{Black}%
-    \def\SIL@bgcol{White}%
+    \def\SIL@fgcol{White}%
   \fi
   \typeout{BG=\SIL@bgcol, FG=\SIL@fgcol}%
 %    \end{macrocode}
