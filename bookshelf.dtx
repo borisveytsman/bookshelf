@@ -2029,7 +2029,15 @@ Package biblatex Warning: Please (re)run Biber on the file:
        \step[fieldsource=rawauthor, fieldtarget=usera]
        }}}
 %    \end{macrocode}
-% And the command itself
+%
+% \begin{macro}{\preamble}
+% Calibre has a pesky habit of adding a preamle with the number of
+% books in the library.  We do not want to typeset it
+%    \begin{macrocode}
+\let\preamble\typeout
+%    \end{macrocode}
+% \end{macro}
+%
 % \iffalse
 %</class>
 % \fi
