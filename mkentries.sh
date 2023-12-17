@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-grep ^@ books.bib | sed 's/@.*{ /\\makebook{/' | sed 's/,/}%/'
+grep ^@ books.bib | sed '/^@preamble/d' | sed 's/@.*{ /\\makebook{/' | sed 's/,/}%/'
