@@ -2017,6 +2017,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
 %    \begin{macrocode}
 \DeclareCiteCommand\extractcitetext{}{%
   \xdef\extractcitetextresult{\thefield{title} \thefield{usera}}}{}{}
+\def\extractcitetextresult{}
 %    \end{macrocode}
 %
 % We tell biber to collect the author info
