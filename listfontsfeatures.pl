@@ -42,6 +42,8 @@ if (-r $opts{x}) {
     close PATTERNS;
 }
 
+my $standardFeatures="+clig;+liga;+tlig";
+
 while(<>) {
     chomp;
     my $font=$_;
@@ -67,7 +69,7 @@ while(<>) {
 	}
     }
     if ($goodFont) {
-	print "$font\n";
+	print "$font:$standardFeatures\n";
 	open (FEATURES, "otfinfo -f $fontfile |");
 	while (<FEATURES>) {
 	    chomp;
@@ -82,7 +84,7 @@ while(<>) {
 	    if (!$goodFeature) {
 		next;
 	    }
-	    my $output="$font $feature";
+	    my $output="$font:$standardFeatures;+$feature";
 	    foreach my $excl (@excluded) {
 		if ($output =~ m/$excl/) {
 		    $goodFeature=0;

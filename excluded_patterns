@@ -1,5 +1,5 @@
-^Alegreya.* ss02
-^Spectral.* ss04
+^Alegreya.*\+ss02
+^Spectral.*\+ss04
 ^Hans_Holbein
 ^Megazoid-Shade
 ^HEJI2Text
@@ -42,11 +42,11 @@
 ^P22GaugnXtr
 ^P22CezanSkt
 ^P22CezanLig
-^P22DeaPro.* ss07
+^P22DeaPro.*\+ss07
 ^BradleyInitialsDJRLayers-Background
-^Junicode.* ss12
-^Junicode.* ss13
-^Junicode.* ss14
+^Junicode.*\+ss12
+^Junicode.*\+ss13
+^Junicode.*\+ss14
 ^QTDingBits.*
 Math-Companion
 Script-Companion
