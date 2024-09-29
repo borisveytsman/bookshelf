@@ -1636,7 +1636,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
 %    \begin{macrocode}
 \prg_new_conditional:Nnn \__SIL_primitive_font_glyph_if_exists:n  {TF,F}
   {
-    \tex_iffontchar:D \l_fontspec_font `#1 \scan_stop:
+    \tex_iffontchar:D \SILmfont `#1 \scan_stop:
       \prg_return_true:
     \else:
       \prg_return_false:
@@ -1690,7 +1690,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
 \ExplSyntaxOff
 \newcount\SIL@num@fontsel@files
 \SIL@num@fontsel@files=0
-\def\SIL@max@fontsel@files{2100}
+\def\SIL@max@fontsel@files{5500}
 %    \end{macrocode}
 %
 % \subsubsection{Making the book}\label{mb}
