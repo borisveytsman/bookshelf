@@ -152,21 +152,6 @@
 \usepackage{luximono}% requested by author (16)%
 \usepackage{mflogo}% used by default. (36)%
 \usepackage[british]{babel}% used by default. (41)%
-\usepackage[backend=biber,doi=true,
-  isbn=true,url=true,uniquename=false,style=apa]{biblatex}% bibliography/@arch=biblatex detected. (42)%
-  \makeatletter
-  \AtBeginDocument{%
-	    \setlength{\bibitemsep}{1ex}%
-	    \setlength{\bibnamesep}{1.5\itemsep}%
-	    \defbibheading{shortbib}[References]%
-	      {\section{#1}}}
-	  \@ifpackagewith{babel}{british}{%
-	    \DeclareLanguageMapping{british}%
-	      {british-apa}}{\relax}
-  \makeatother
-  \makeatletter
-  \providetoggle{blx@skipbiblist}
-  \makeatother
 \usepackage{calc}% used by default. (50)%
   \makeatletter
   {\scriptsize
@@ -1238,25 +1223,6 @@ Package biblatex Warning: Please (re)run Biber on the file:
   nofoot,margin=1cm]{geometry}%
 %    \end{macrocode}
 % \end{CPK@package}
-% \begin{CPK@package}{biblatex}
-% Use \textsf{biblatex} instead of \BibTeX{};
-% \iffalse
-%% Use biblatex instead of \BibTeX{}
-% \fi
-%    \begin{macrocode}
-\RequirePackage[backend=biber,style=authoryear,
-  doi=true,isbn=true,url=true,uniquename=false]{biblatex}%
-  \AtBeginDocument{%
-	    \setlength{\bibitemsep}{1ex}%
-	    \setlength{\bibnamesep}{1.5\itemsep}%
-	    \defbibheading{shortbib}[References]%
-	      {\section{#1}}}
-	  \@ifpackagewith{babel}{british}{%
-	    \DeclareLanguageMapping{british}%
-	      {british-apa}}{\relax}
-  \providetoggle{blx@skipbiblist}
-%    \end{macrocode}
-% \end{CPK@package}
 % 
 % \subsection{Non-package resources}
 % \iffalse
@@ -1696,15 +1662,14 @@ Package biblatex Warning: Please (re)run Biber on the file:
 % \subsubsection{Making the book}\label{mb}
 % The {\ttfamily{}\textbackslash{}makebook} macro is huge, and
 %     handles all the detail of making a book spine. It takes
-%     one mandatory argument: a \BibTeX{} entry label value from
-%     the declared \BibTeX{} {\ttfamily{}.bib} file in
-%     {\ttfamily{}\textbackslash{}addbibresource}.\par
+%     two mandatory arguments: the author and the title of the
+%     book.\par 
 % \begin{CPK@macro}{\makebook}\label{macro--makebook}
 % Start by announcing the entry label and setting the
 %     values that need to be reset every time.\par
 %    \begin{macrocode}
-\newcommand{\makebook}[1]{%
-  \typeout{^^J#1}%
+\newcommand{\makebook}[2]{%
+  \typeout{^^JTypesetting #2---#1}%
   \setcounter{SIL@maxloop}{10}%
   \setcounter{SIL@loopcount}{0}%
 % observed
@@ -1810,7 +1775,6 @@ Package biblatex Warning: Please (re)run Biber on the file:
 %       same reason).\par
 %    \begin{macrocode}
   \c@SIL@loopcount=1\relax
-  \extractcitetext{#1}%
   \loop
     \ifnum\SIL@num@fontsel@files<\SIL@max@fontsel@files
       \advance\SIL@num@fontsel@files by 1\relax
@@ -1823,7 +1787,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
     \fi
     \input{fontsel/\theSIL@fontsel.tex}\unskip%
     \typeout{Trying \SILmfontname, attempt \the\c@SIL@loopcount}%
-    \CanTypesetTF{\extractcitetextresult}{\global
+    \CanTypesetTF{#2---#1}{\global
       \SIL@fontfoundtrue}{\global
       \SIL@fontfoundfalse}%
     \ifSIL@fontfound
@@ -1849,10 +1813,10 @@ Package biblatex Warning: Please (re)run Biber on the file:
 %       point and won't change later.\par
 %    \begin{macrocode}
   \settowidth{\SIL@authorwidth}{%
-              \SILmfont\citefullauthor{#1}}%
+              \SILmfont#1}%
   \typeout{Author width: \the\SIL@authorwidth}%
   \settoheight{\SIL@authorheight}{%
-               \SILmfont\citefullauthor{#1}}%
+               \SILmfont#1}%
   \typeout{Author height: \the\SIL@authorheight}%
   \ifdim\SIL@authorwidth<.9\SIL@maxbookwidth
     \typeout{Author width is less than 90\%
@@ -1934,10 +1898,10 @@ Package biblatex Warning: Please (re)run Biber on the file:
           hsize=\the\SIL@bookwidth}%
         \centering
         \SILmfont\color{\SIL@fgcol}%
-        \citefullauthor{#1}%
+        #1%
         \par\vfill
         \SIL@fittext{\color{\SIL@fgcol}\SILmfont
-          \citetitle{#1}}{\SIL@heightfortitle}{\SIL@bookwidth}%
+          #2}{\SIL@heightfortitle}{\SIL@bookwidth}%
         {\SIL@titlebox}%
         \rotatebox{90}{\box\SIL@titlebox}%
         }%
@@ -1945,8 +1909,8 @@ Package biblatex Warning: Please (re)run Biber on the file:
       \typeout{Setting author inline to title}%
       \vbox to\SIL@bookheight{\hsize\SIL@bookwidth
         \SIL@fittext{\color{\SIL@fgcol}\SILmfont
-          \citetitle{#1}\quad
-          ---\quad\citefullauthor{#1}}{\SIL@bookheight}{\SIL@bookwidth}%
+          #1\quad
+          ---\quad#2}{\SIL@bookheight}{\SIL@bookwidth}%
         {\SIL@titlebox}%
         \rotatebox{90}{\box\SIL@titlebox}%
       }%
@@ -1966,78 +1930,10 @@ Package biblatex Warning: Please (re)run Biber on the file:
 \penalty0}
 %    \end{macrocode}
 % \end{CPK@macro}
-% \begin{CPK@macro}{\DeclareCiteCommand}\label{fields}
-% Trying to ensure we have an author's full name, not
-%       just the surname. This came from \href{https://tex.stackexchange.com/questions/24979/citing-authors-full-name-in-biblatex}{lockstep}, 
-%       modified at \textsf{biblatex}'s suggestion to
-%       use {\ttfamily{}given-family} instead of
-%       {\ttfamily{}first-last}, but it doesn't seem
-%       to have any effect.\par
-%    \begin{macrocode}
-\DeclareCiteCommand{\citefullauthor}
-  {\boolfalse{citetracker}%
-   \boolfalse{pagetracker}%
-   \DeclareNameAlias{labelname}{given-family}%
-   \usebibmacro{prenote}}
-  {\ifciteindex
-     {\indexnames{labelname}}
-     {}%
-   \printnames{labelname}}
-  {\multicitedelim}
-  {\usebibmacro{postnote}}
-%    \end{macrocode}
-% \end{CPK@macro}
-% \begin{CPK@macro}{\DeclareLabeltitle}\label{macro--DeclareLabeltitle}
-% Similarly, in an attempt to get keep the author and
-%       title for books and monographs, but use the editors and
-%       volume/journal/book title for articles, incollection, and
-%       inbook entry types, these two definitions don't seem to
-%       have any effect. The remaining definitions are
-%       needed to cope with the expected commands found in
-%       sample bibliographies.\par
-%    \begin{macrocode}
-%%\DeclareLabeltitle[article]{%
-%%  \field{journaltitle}
-%%}
-%%\DeclareLabeltitle
-%%    [inbook,incollection,inproceedings]{%
-%%  \field{booktitle}
-%%  \field{maintitle}
-%%}
 %
-\DeclareFieldFormat*{citetitle}{#1}
-\let\citeA\textcite
-\let\titleref\emph
-\def\emdash{~--- }
-%    \end{macrocode}
-% \end{CPK@macro}
-%
-% To check whether we can typeset book title and authors in the given
-% font, we need to extract textual information.
 %    \begin{macrocode}
-\DeclareCiteCommand\extractcitetext{}{%
-  \xdef\extractcitetextresult{\thefield{title} \thefield{usera}}}{}{}
-\def\extractcitetextresult{}
+\raggedright
 %    \end{macrocode}
-%
-% We tell biber to collect the author info
-%    \begin{macrocode}
- \DeclareSourcemap{%
-   \maps{%
-     \map{%
-       \step[fieldsource=author]
-       \step[fieldset=rawauthor, origfieldval]
-       \step[fieldsource=rawauthor, fieldtarget=usera]
-       }}}
-%    \end{macrocode}
-%
-% \begin{macro}{\preamble}
-% Calibre has a pesky habit of adding a preamle with the number of
-% books in the library.  We do not want to typeset it
-%    \begin{macrocode}
-\let\blx@bbl@preamble\typeout
-%    \end{macrocode}
-% \end{macro}
 %
 % \iffalse
 %</class>

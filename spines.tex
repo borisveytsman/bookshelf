@@ -3,14 +3,10 @@
 % !BIB TS-program = biber
 
 \documentclass[landscape]{bookshelf}
-\addbibresource{books.bib}
-\defaultfontfeatures{Ligatures=TeX}
-\renewcommand*{\finalnamedelim}{%
-  \ifnumgreater{\value{liststop}}{2}{\finalandcomma}{}%
-  \addspace\&\space}
-\begin{document}\raggedright
-\input{entries.tex}
+\begin{document}
 \nocite{*}
+\bibliography{books}
+\bibliographystyle{bookshelf}
 \end{document}
 
 
