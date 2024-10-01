@@ -24,7 +24,7 @@ List all TTF and OTF files known to TeX system.  If no arguments are given, sear
 
 gives only the fonts in the C<texmf-dist> distribution.
 
-Output the locations of ttf or otf files, one per line
+Outputs the locations of ttf or otf files, one per line
 
 =head1 OPTIONS
 
