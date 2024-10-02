@@ -123,7 +123,65 @@ if (exists $opts{x}) {
 	}
     }
     close PATTERNS;
-}
+} else {
+    @excluded = qw(
+	Alegreya.*\+ss02
+	Spectral.*\+ss04
+	Hans_Holbein
+	Megazoid-Shade
+	HEJI2Text
+	NotoColorEmoji
+	GimletXRay-VF
+	MegabaseCore
+	PappardelleV2
+	countriesofeurope
+	drmdoz
+	drmsy
+	drmtc
+	drmfigs
+	drmgrk
+	smf
+	SimpleIcons
+	Skak
+	FontAwesome
+	InputCipher
+	FdSymbol
+	greciliae
+	blex\.ttf
+	blsy\.ttf
+	rblmi\.ttf
+	emo-lingchi
+	MnSymbol
+	MdSymbol
+	dantelogo
+	emmentaler
+	marvosym
+	Asap-Symbol
+	metsymb
+	AlgolRevived
+	P22FraJenPeo.otf
+	LTCFlueronsGranjon
+	LTCArchiveOrn
+	SVRsymbols
+	LTCHalloweenOrnaments
+	BradleyInitialsDJRLayers-Frame
+	P22CezanSwa
+	P22GaugnXtr
+	P22CezanSkt
+	P22CezanLig
+	P22DeaPro.*\+ss07
+	BradleyInitialsDJRLayers-Background
+	Junicode.*\+ss12
+	Junicode.*\+ss13
+	Junicode.*\+ss14
+	QTDingBits
+	Math-Companion
+	Script-Companion
+	TwemojiMozilla
+	NAMU-Tryzub
+	\/Fonts\/Supplemental\/
+	NotoSansMyanmar\.ttc
+	);
 
 my $standardFeatures="+clig;+liga;+tlig";
 
@@ -173,14 +231,14 @@ while (<FONTS>) {
 		$goodFeature=1;
 		last;
 	    }
-	    }
+	}
 	if (!$goodFeature) {
 	    next;
 	}
 
 	foreach my $excl (@excluded) {
 	    if ($loadcommand1 =~ m/$excl/) {
-	    $goodFont=0;
+	    $goodFeature=0;
 	    if ($DEBUG) {
 		print STDERR
 		    "  Feature $featurename is excluded by pattern $excl\n";
