@@ -3,11 +3,15 @@
 #
 =pod
 
-=NAME
+=head1 NAME
+
+mkfontsel.pl - a script to populate C<fontsel> directory and create C<pickfont.tex> file for I<bookshelf> package
+
+=head1 SYNOPSIS
 
 mkfontsel.pl FONTFILE
 
-=DESCRIPTION
+=head1 DESCRIPTION
 
 Create and populate fontsel directory from the file
 produced by L<listallfonts.pl(1)> script, and create
@@ -18,6 +22,7 @@ I<bookshelf> package.
 
 =over 4
 
+=item B<-v>
 
 Print version information
 

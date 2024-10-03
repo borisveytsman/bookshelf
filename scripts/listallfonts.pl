@@ -182,6 +182,7 @@ if (exists $opts{x}) {
 	\/Fonts\/Supplemental\/
 	NotoSansMyanmar\.ttc
 	);
+}
 
 my $standardFeatures="+clig;+liga;+tlig";
 

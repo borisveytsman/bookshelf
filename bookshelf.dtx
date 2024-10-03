@@ -1,9 +1,8 @@
 % \iffalse meta-comment
 %
-% Transformed from bookshelf.xml by ClassPack db2dtx.xsl
-% version 1.19 (2020-05-19) on Saturday 23 May 2020 at 23:33:08
 %
-% bookshelf.dtx is copyright © 2020 by Peter Flynn <peter@silmaril.ie>
+% bookshelf.dtx is copyright © 2020-2024 by Peter Flynn
+% <peter@silmaril.ie> and Boris Veytsman <borisv@lk.net>
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either
@@ -29,7 +28,7 @@
 \ProvidesFile{bookshelf.dtx}
 %</driver>
 %<class>\NeedsTeXFormat{LaTeX2e}[2017/04/15]
-%<class>\ProvidesClass{bookshelf}[2020/05/24 v0.5
+%<class>\ProvidesClass{bookshelf}[2024/10/24 v1.0
 %<class>  Turn your bibliography into a bookshelf image]
 %<*driver>
 \RequirePackage{fix-cm}% included by default.
@@ -38,7 +37,8 @@
 %%
 %% Packages added for documentation
 %%
-\usepackage{dox}% used by default. (0)%
+\usepackage[noindex]{dox}% used by default. (0)%
+
   \makeatletter
   \doxitem[idxtype=attribute]{Attribute}{CPK@attribute}{attributes}
   \makeatother
@@ -194,7 +194,9 @@
   \setcounter{dbltopnumber}{9}
 \usepackage[level]{fmtcount}% xref/@linkend➝listitem/xml:id detected. (71)%
 \usepackage[a4paper,left=30mm,top=25mm,
-  textwidth=150mm,textheight=225mm,headheight=15pt]{geometry}% used by default. (72)%
+  textwidth=150mm,textheight=225mm,headheight=15pt]{geometry}% used by
+  % default. (72)%
+\usepackage{biblatex}  
 \usepackage{hypdoc}% requested by author (78)%
   \hypersetup{linkcolor=DarkBlue,urlcolor=Blue,citecolor=Red}
   \ExecuteBibliographyOptions{maxcitenames=1}
@@ -453,7 +455,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{718}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -470,7 +472,8 @@
 %   Right bracket \]  Circumflex    \^  Underscore    \_
 %   Grave accent  \`  Left brace    \{  Vertical bar  \|
 %   Right brace   \}  Tilde         \~}
-% 
+%
+% \changes{v1.0}{2024/10/02}{New maintainer.  Starting rewriting}
 % \changes{v0.5}{2020/05/24}{Finished initial testing: Replaced hyperref with hypdoc to avoid makeindex bug.}
 % \changes{v0.4}{2020/05/19}{Completed documentation: 1) Updated note on bug in biber when processing sgml.bib; 2) Removed sgml.bib as example until problems are resolved; 3) Backtracked on attempt to use the monographic title for articles, chapters, etc; 4) Revised notes on production.}
 % \changes{v0.3}{2020/05/14}{Finished first pass on documentation: 1) Done preliminary testing; 2) Script adapted for Mac OS X.}
@@ -560,17 +563,19 @@
 % \setcounter{tocdepth}{5}
 % \setcounter{secnumdepth}{5}
 % \makeatletter
-% \def\@@doxdescribe#1#2{\endgroup \ifdox@noprint\else\marginpar{\raggedleft \textcolor{DarkRed}{\@nameuse{PrintDescribe#1}{#2}}}\fi \ifdox@noindex\else\@nameuse{Special#1Index}{#2}\fi \endgroup\@esphack\ignorespaces}
 % \makeatother
 %
-% \def\fileversion{0.5}
-% \def\filedate{2020/05/24}
-% \title{The  \textsf{bookshelf} \LaTeXe\ document class\thanks{%
+% \def\fileversion{1.0}
+% \def\filedate{2022/10/02}
+% \title{The  \textsf{bookshelf} document class\thanks{%
 % This document corresponds to \textsf{bookshelf}
-% \textit{v.}\ \fileversion $\beta$, dated \filedate.}
+% \textit{v.}\ \fileversion, dated \filedate.}
 % \\[1em]\Large 
 % Turn your bibliography into a bookshelf image}
-% \author{Peter Flynn\\\normalsize Silmaril Consultants\\[-.25ex]\normalsize Instant Textual Gratification Division\\\normalsize(\url{peter@silmaril.ie})}
+% \author{Peter Flynn\\\normalsize Silmaril
+% Consultants\\[-.25ex]\normalsize Instant Textual Gratification
+% Division\\\normalsize(\url{peter@silmaril.ie})\\
+% Boris Veytsman\\\normalsize(\url{borisv@lk.net})}
 % \maketitle
 % \renewcommand{\abstractname}{Summary}\thispagestyle{empty}
 % \begin{abstract}
@@ -578,8 +583,7 @@
 % \advance\parskip by 0pt plus 2pt
 % \parindent=0pt% \noindent
 % The \textsf{bookshelf} package uses
-% \textsf{biblatex} and
-% \emph{biber} to turn a \BibTeX{}
+% your \BibTeX{}
 % bibliography file into a randomly-coloured, randomly-sized
 % shelf of books, with the title and author in a randomly-chosen
 % typeface. The image (converted to {\smaller JPEG} from
@@ -587,12 +591,12 @@
 % \emph{Zoom},
 % \emph{Teams},
 % \emph{WhatsApp} etc video calls. It
-% requires a little preliminary work with the supplied script to
+% requires a little preliminary work with the supplied scripts to
 % set up a list of all your fonts, a list of colors, and a list
 % of the \BibTeX{} entry names in your {\ttfamily{}.bib}
 % file, but otherwise should work on any modern \TeX{}
 % distribution.\par
-% \par\centering\includegraphics[width=.666\columnwidth]{myshelf.jpg}
+% \par\centering\includegraphics[width=.55\columnwidth]{myshelf.jpg}
 % \end{abstract}
 % \clearpage
 % \tableofcontents
@@ -609,8 +613,46 @@
 %     RFC 2119 \parencite{rfc2119}.\par
 % When shown in normal type, these words keep their conventional
 %     contextual degree of meaning.\par
+%     \clearpage
+%     \section*{Foreword by BV}
+% \addcontentsline{toc}{section}{Foreword by BV}
+% I have spent many hours admiring colorful bookcases produced by
+% Peter Flynn's \emph{bookshelf} package.  They helped me to survive
+% many boring remote meetings during the {\smaller COVID} pandemic and its
+% aftermath.  However, since my library had books in different
+% languages, I wanted to showcase them as well.  I started to write
+% patches for the package, and at some point Peter kindly decided to
+% transfer the maintenance to me.
+%
+% I described the project at {\smaller
+% TUG}~2024~\parencite{Bookshelf2024}.  At present the following
+% changes has been implemented:
+% \begin{enumerate}
+% \item The package now can typeset book spines in any language.  It
+% automatically selects a random font capable to typeset a given
+% spine.
+% \item The new |listallfonts.pl| script lists all system and \TeX\
+% fonts with ``interesting'' variants, while the new |mkfontsel.pl|
+% script populates the |fontsel| directory.
+% \item The package now understands fonts in OTF, TTF
+% \item The switch from Biber to Bib\TeX\ made the processing much
+% faster, and eliminated the need for the separate |entries.tex| file:
+% now the |.bbl| file has the right format.
+% \item The switch from \emph{fontspec} to primitive font loading also
+%   made the processing faster---and increased the number of fonts we
+%   can display.
+% \end{enumerate}
+%
+% There is, however, a price for these improvements: now the package
+% is Lua\LaTeX-only. 
+%
+% \bigskip
+% \emph{Boris Veytsman, October 2024}
 % \clearpage
+% \addcontentsline{toc}{section}{Latest changes}
 % \section*{Latest changes}
+% \subsection*{v.1.0(2025/10/02)}
+% New maintainer.  Several rewrites.
 % \subsection*{v.0.5 (2020-05-24)}
 % \paragraph*{Finished initial testing}
 % \begin{itemize}
@@ -641,7 +683,6 @@
 % \item Done preliminary testing\par
 % \item Script adapted for Mac OS X\par
 % \end{itemize}
-% See p.\thinspace\pageref{changehistory} for earlier changes.
 % \subsection*{Acknowledgments}
 % Thanks to many people for the original
 % suggestion; and to Isabel Yorke, Bethan Tovey-Walsh,
@@ -650,37 +691,36 @@
 % testing comments.\par
 % \clearpage
 % \section{Documentation}
-% During the era of the
-% {\smaller COVID-19} lockdown, the popularity
-% of group video messaging grew rapidly, both for
-% business and domestic use. As people sought for what
-% they believed to be more representative backgrounds
-% than a messy kitchen, an untidy workroom, or a
-% sterile blank wall, a well-populated bookshelf was a
-% frequent choice.\par
-% This package is for those who cannot use (or
-% don't have, or don't want to use) such a bookshelf,
-% but can still lay their hands on a bibliography or
-% reference list in \BibTeX{} format — perhaps from a
-% recent or long-forgotten thesis, book, article, or
-% other document.\par
+% During the era of the {\smaller COVID-19} lockdown, the popularity
+% of group video messaging grew rapidly, both for business and
+% domestic use. As people sought for what they believed to be more
+% representative backgrounds than a messy kitchen, an untidy workroom,
+% or a sterile blank wall, a well-populated bookshelf was a frequent
+% choice.\par
+% This package is for those who cannot use (or don't have, or don't
+% want to use) such a bookshelf, but can still lay their hands on a
+% bibliography or reference list in \BibTeX{} format — perhaps from a
+% recent or long-forgotten thesis, book, article, or other
+% document.\par
+% You also may want to showcase your electronic library.  Many
+% programs like \emph{Calibre}~\parencite{Calibre} can export the list
+% of your electronic books in Bib\TeX\ format.  This is how the sample
+% library |spines.pdf| was created.\par
+% Another important use of this package is to provide a diversion
+% during long boring remote meetings.  Try to guess the font the given
+% spine was typeset with---and use these tiny numbers under the books
+% to check your knowledge!
 % \par\begingroup
 %   \fboxsep1em\centering
 %   \fbox{\begin{minipage}{0.8\columnwidth}\sffamily
 %  \raggedright\parindent0pt
 %  \parskip=.5\baselineskip
-% \subsubsection*{\sffamily \XeLaTeX{} and \textsf{biblatex} and
-%   \emph{biber}}
-% To avoid problems with accented and other
+% \subsubsection*{\sffamily Lua\LaTeX{}}
+% To avoid problems with accented 
 %   characters, and to make it easier to maintain,
-%   this document class uses only \XeLaTeX{} and
-%   \textsf{biblatex} and
-%   \emph{biber}.\par
+%   this document class uses only Lua\LaTeX.\par
 % It will not work with the
-%   \emph{pdflatex} or
-%   \emph{bibtex} programs, and it does not
-%   use the {\ttfamily{}.bst} files of old
-%   \BibTeX{}.\par
+%   \emph{pdflatex} or \XeTeX.\par
 % \end{minipage}}\par\endgroup
 % This is a work-in-progress: there are bugs (see \vref{bugs}).\par
 % \subsection{What the package does}
@@ -697,40 +737,25 @@
 %   line.\par
 % \subsection{Preparation}
 % To get things ready for this, you need to install this
-%   document class, and provide the following files.\par
+%   document class, and provide the following data:
 % \begin{enumerate}
-% \item Your \BibTeX{} file;
-% \item A list of all the entry values;
-% \item A list of all your usable text fonts;
-% \item A command defining how many such fonts;
+% \item The list of book as a \BibTeX{} file.  
+% \item A list of all your usable text fonts and the total number of
+% them. 
 % \item A list of all the colors to choose from.
 % \end{enumerate}
 % These are explained in more detail in the subsections
 %   below.\par
-% All but the first of these can be generated by the
-%   supplied shell script {\ttfamily{}prepdata.sh}. This
-%   works on UNIX/GNU Linux and on Apple Mac OS X, and may work
-%   in CygWin, but needs more work for plain Windows.\par
 % \subsubsection{Your \BibTeX{} file}
 % Your \BibTeX{} ({\ttfamily{}.bib}) file,
 %     suitable for use with \emph{biber}
 %     rather than \emph{bibtex}.\par
-% Old \BibTeX{} files will work, but possibly not
-%     optimally: if you want to update them, see \vref{bibchanges} for what to edit; but this is not
-%     needed for this class.\par
-% One thing that may help is to replace all the
+% You may need to replace all the
 %     old-style symbolic notation accented characters like
 %     \verb|{\"a}| for
 %     `ä' and
 %     \verb|{\l}| for
-%     `ł'. Not only is the symbolic
-%     notation no longer needed because \XeLaTeX{} and the
-%     \emph{biber} program handle
-%     {\smaller UTF-8} characters, which the old
-%     \emph{bibtex} program doesn't; the
-%     discipline of replacing helps to reduce the problem of
-%     unmatched curly braces, which is one of the biggest
-%     sources of errors in \BibTeX{} files.\par
+%     `ł'. \par
 % If you have a bibliography in
 %     \emph{EndNote},
 %     \emph{Mendeley},
@@ -743,44 +768,35 @@
 %     converted to \BibTeX{} by opening it in
 %     \emph{JabRef} and saving it
 %     as \BibTeX{}.\par
-% \subsubsection{Entry values}
-% A list of all the entry values from your \BibTeX{} file
-%     (the unique names immediately after the document type),
-%     each given as the argument to a
-%     \verb|\makebook}{...}| command in a file called
-%     {\ttfamily{}entries.tex}.\par
 % \subsubsection{Font file list}\label{fontfiles}
-% A set of 1–line files in a subdirectory called
-%     {\ttfamily{}fontsel} representing of all the
-%     usable text fonts on your system that you wish to use;
-%     that is, excluding broken or partial fonts, symbols, math,
-%     non-Latin characters or alphabets, and display or non-text
-%     fonts.\par
+% A set of 2–line files in a subdirectory called
+%     |fontsel| representing of all the
+%     usable text fonts on your system.\par
 % Each file {\sffamily {\smaller MUST}} be
 %     numbered sequentially in its name (eg
 %     {\ttfamily{}1.tex}, {\ttfamily{}2.tex},
 %     {\ttfamily{}3.tex}, etc) and
-%     {\sffamily {\smaller MUST}} contain a
-%     \verb|\newfontface{SILmfont}{...}| command for
-%     the font name \emph{and} a definition of its
-%     name in a \verb|\SILmfontname{...}| command
-%     (see the examples generated by the
-%     {\ttfamily{}prepdata.sh} script). Be aware that
-%     many fonts on your system may not be suitable for setting
-%     normal text: see the comments in the script\par
-% These files are entirely dependent on your system
-%     because everyone has a different set of fonts.\par
+%     {\sffamily {\smaller MUST}} contain a |\font| command and define
+%     the name of the font, for example
+% \begin{verbatim}
+% \font\SILmfont={[/usr/local/texlive/2024/texmf-dist/fonts/opentype/public/junicode/Junicode-SmCondMediumItalic.otf]:+clig;+liga;+tlig;+swsh}\SILmfont
+% \def\SILmfontname{Junicode SmCond Medium Italic; Swash}%
+% \end{verbatim}
+% This list can be created using the scripts |listallfonts.pl| and
+% |mkfontsel.pl|, see~\vref{sec:scripts}.
 % \subsubsection{Maximum number of fonts}
 % A file called {\ttfamily{}pickfont.tex}
 %     containing a
 %     \verb|\setcounter{SIL@maxfont}{...}| command to
 %     set the total number of the fonts which are represented in
 %     the {\ttfamily{}fontsel} subdirectory above\par
+% This file can be created using the scripts |listallfonts.pl| and
+% |mkfontsel.pl|, see~\vref{sec:scripts}.
 % \subsubsection{List of colors}
 % A list of all the colors represented by the
 %     {\smaller SVG} palette used by the
-%     \textsf{xcolor} package: the file created by
-%     the script is called {\ttfamily{}svgnam.tex}.
+%     \textsf{xcolor} package: the file is called
+%     called {\ttfamily{}svgnam.tex}.
 %     This contains three definitions:\par
 % \begin{enumerate}
 % \item the command {\ttfamily{}\textbackslash{}SIL@svgcolname}
@@ -794,74 +810,63 @@
 % \item the counter {\ttfamily{}SIL@maxcolno} which holds
 % the number of colors available.\par
 % \end{enumerate}
+% This file is included in the distribution.
+%
 % \subsection{Producing your bookshelf}
-% This class comes with a file
-%   {\ttfamily{}test.tex} which you can use to test your
-%   file of references. It is initially set just to make the
-%   {\ttfamily{}test.aux} file that
-%   \emph{biber} needs to create your
-%   {\ttfamily{}test.bbl} bibliography file; that is, it
-%   will \emph{not} try to run the shell script
-%   \emph{or} to create a bookshelf the first time
-%   round, until everything else is ready.\par
+%
+% \subsubsection{Producing the list of fonts}
+% \label{sec:scripts}
+%
+% Each system has its own fonts installed, so you need to create the
+% list of fonts installed on \emph{your} system.  It is done in three
+% steps.
 % \begin{enumerate}
-% \item Run the shell script with your
-%       {\ttfamily{}.bib} filename as the argument,
-%       eg;
-% \iffalse
-%<*ignore>
-% \fi
-\begin{lstlisting}[language={[LaTeX]TeX}]
-$ ./prepdata.sh mythesis.bib
-\end{lstlisting}
-% \iffalse
-%</ignore>
-% \fi
-% \item Edit the {\ttfamily{}test.tex} file and
-%       change the name of the {\ttfamily{}.bib} file in
-%       the {\ttfamily{}\textbackslash{}addbibresource} command to the
-%       name of your own file\par 
-% Leave the two lines {\ttfamily{}\textbackslash{}immediate} and
-%       {\ttfamily{}\textbackslash{}input} commented out for the
-%       moment;
-% \item Delete any {\ttfamily{}test.aux} or
-%       {\ttfamily{}test.bbl} files in the directory in
-%       which you are doing this;
-% \item Typeset the test file with \XeLaTeX{}. You should get
-%     three messages:\par
-% \iffalse
-%<*ignore>
-% \fi
-\begin{lstlisting}[language={[LaTeX]TeX}]
-LaTeX Warning: Empty bibliography on input line 12.
-LaTeX Warning: There were undefined references.
-Package biblatex Warning: Please (re)run Biber on the file:
-(biblatex)                test
-(biblatex)                and rerun LaTeX afterwards.
-\end{lstlisting}
-% \iffalse
-%</ignore>
-% \fi
-% \item Process the test file with
-%       \emph{biber}
-%       (\emph{not} \emph{bibtex}). You will probably
-%       get many warning messages: ignore them. If you get a
-%       fatal error, however, you will need to find the problem
-%       in your {\ttfamily{}.bib} file and fix it before
-%       going any further.\par
-% See also the known bug at item~\ref{sgmlbib} in the list on p.\thinspace\pageref{sgmlbib};
-% \item Edit the test file and
-%       \emph{un}comment the line starting
-%       {\ttfamily{}\textbackslash{}input}, save the file, and retypeset
-%       it twice.
+% \item Update the database of fonts known to Lua\TeX:
+% \begin{verbatim}
+% luaotfload-tool --update --force
+% \end{verbatim}
+% The key |--force| forces the update even if Lua\TeX\ thinks it is
+% not necessary: sometimes it is mistaken.
+% \item Create the list of the usable fonts and font variants:
+% \begin{verbatim}
+% listallfonts.pl [options] > allfonts
+% \end{verbatim}
+% The script lists all fonts in {\smaller OTF, TTF} or {\smaller TTC}
+% format, known to Lua\LaTeX.  For scripts in {\smaller OTF} and
+% {\smaller TTF} format it looks at the ``interesting'' Open Type
+% features like swash and stylistic variant and lists them too.  This
+% means that the bookshelf might have spines typeset in the different
+% variants of the same font---they are considered different fonts!
+% You can change the list of feaures using the key |-f FEATURES_FILE|;
+% see the |doc| directory for an example.  The script tries to exclude
+% broken font files;  you can change the list with the key
+% |-x EXCLUDED_PATTERNS|.  Again, there is an example in the |doc|
+% directory.
+% \item Create the |fontsel| directory and the file |pickfont.tex|
+% using the command
+% \begin{verbatim}
+% mkfontsel.pl allfonts
+% \end{verbatim}
 % \end{enumerate}
-% You should now have a {\smaller PDF} bookshelf!
-%   The books are in the order in which they appear in your
-%   {\ttfamily{}.bib} file because the script creates
-%   the list of entries to process in that order, regardless of
-%   what \emph{biblatex} or
-%   \emph{biber} are configured to
-%   do.\par
+%
+% \subsubsection{Driver file}
+%
+% The distribution contains the file |spines.tex|
+% \begin{verbatim}
+% % !TEX TS-program = lualatex
+% % !TEX encoding = UTF-8 Unicode
+% % !BIB TS-program = bibtex
+% \documentclass[landscape]{bookshelf}
+% \begin{document}
+% \nocite{*}
+% \bibliography{sample}
+% \bibliographystyle{bookshelf}
+% \end{document}
+% \end{verbatim}
+%
+% Change |sample| to the name of your bibliography, and typeset the
+% file using |lualatex| and | bibtex|.
+%
 % \subsubsection{Options}
 % The class comes set for making an
 %     \textbf{\texttt{a0paper}} page (1189 mm × 841 mm
@@ -879,127 +884,13 @@ Package biblatex Warning: Please (re)run Biber on the file:
 %     produce the page in that format instead of
 %     landscape.\par
 %
-% \subsection{Changes between \BibTeX{} fields and
-%   \emph{biblatex}}\label{bibchanges}
-% This has been expanded from the description provided in
-%   \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=33}{§2.3
-%     of the online documentation for
-%     \textsf{biblatex}} v3.14 (1 December
-%   2019).\par
-% This is for information only. You do not need to do any
-%   of this to use the \index{bookshelf=\textsf{bookshelf} (class)}\textsf{bookshelf} document
-%   class unless you encounter errors processing your
-%   {\ttfamily{}.bib} file.\par
-% \begin{enumerate}
-% \item The entry type {\ttfamily{}@inbook}
-%       (basically only use this where each chapter of the book
-%       is written by a different author). See \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=8}{§2.1.1} 
-%       and \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=33}{§2.3.1} 
-%       for details.\par
-% \item Replace {\ttfamily{}school} with {\ttfamily{}institution} for theses;
-%       replace {\ttfamily{}publisher} with {\ttfamily{}organization} for manuals
-% and conference sponsors;
-%       and replace {\ttfamily{}address} with {\ttfamily{}location}. See \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=17}{§2.2.2}, 
-%       \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=32}{§2.2.5}, 
-%       and \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=34}{§2.3.4} 
-%       for details.\par
-% \item The handling of certain types of titles. See \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=35}{§2.3.5} 
-%       for details. Replace {\ttfamily{}journal} with
-%       {\ttfamily{}journaltitle} in {\ttfamily{}@article} entries.\par
-% \item The field {\ttfamily{}series}: only
-%       use it for journal series; for the main title of
-%       multi-volume works use {\ttfamily{}maintitle}.
-%       See \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=17}{§2.2.2} 
-%       and \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=37}{§2.3.7} 
-%       for details.\par
-% \item The fields {\ttfamily{}year} and {\ttfamily{}month} must be
-%       integers; {\ttfamily{}month} {\sffamily {\smaller MUST NOT}} be
-%       alphabetic. The field {\ttfamily{}date} {\sffamily {\smaller MUST}} be an
-%       {\smaller ISO} 8601 date in the format
-%       {\ttfamily{}yyyy-mm-dd}. See \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=17}{§2.2.2}, 
-%       \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=38}{§2.3.8}, 
-%       and \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=39}{§2.3.9} 
-%       for details.\par
-% \item The field {\ttfamily{}edition} must
-%       be an integer with no ordinal indicator or abbreviation
-%       `ed'. See \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=17}{§2.2.2} 
-%       for details.\par
-% \item Replace {\ttfamily{}key} with
-%       {\ttfamily{}label}. See \href{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf\#page=33}{§2.3.2} 
-%       for details.\par
-% \end{enumerate}
-% Most of this is for creating new entries. For converting
-%   \BibTeX{} files for use with
-%   \emph{biblatex}, just change the field
-%   names as in items 2, 3, 4, and 7; and make sure your months
-%   and editions are integers.\par
 % \subsection{Bugs}\label{bugs}
 % Some things don't yet work as they should, and
 %   there are some features that may or may not make
-%   the final cut.\par
-% \begin{enumerate}
-% \item The shell script doesn't run on Windows
-%       because I don't have any Windows. If someone
-%       would write some Powershell I could include it
-%       in a later version.\par
-% \item There is no conscious
-%       `line'-breaking when a
-%       row of books comes to the
-%       {\ttfamily{}\textbackslash{}pagewidth}, and as it is
-%       deliberately set
-%       {\ttfamily{}\textbackslash{}raggedright} (because you
-%       can't hyphenate a book and variable space
-%       between books seems to be a silly idea), there
-%       is no filler at the ends of lines to complete
-%       the `shelf' (which is
-%       in any case just a bar below each
-%       book).\par
-% \item \label{sgmlbib}A test with a bibliography file from
-%       Nelson Beebe's collection
-%       ({\ttfamily{}sgml.bib}) generated a
-%       {\ttfamily{}test.bbl} with a missing
-%       closing curly brace, terminating (or rather,
-%       failing to terminate) the
-%       {\ttfamily{}\textbackslash{}name} command for an entry.
-%       This appears to be a known bug in
-%       \emph{biber} which is
-%       being fixed in the version 2.15.\par
-% \item There seems to be a recurrent problem with
-%       certain entries and certain fonts where the
-%       length of the title is measured as 0.0pt which
-%       causes an unresolvable problem for the routine
-%       which assigns space and layout. Any
-%       suggestions as to why this occurs are
-%       welcomed.\par
-% \item The objective of the field re-expressions
-%       (see \vref{fields}) was to make sure the book
-%       spine for journal {\ttfamily{}@article}, {\ttfamily{}@incollection}, and
-%       {\ttfamily{}@inbook} entry
-%       types reflected the \emph{book}
-%       or \emph{journal} title, not the
-%       title of the article or chapter. This may or
-%       may not be a good idea.\par
-% \item During development, it became obvious that
-%       the number of fonts on many systems can be
-%       very large. The
-%       {\ttfamily{}prepdata.sh} script
-%       currently includes the exclusions I made on
-%       {\smaller UNIX}/{\smaller GNU}
-%       Linux and Apple Mac {\smaller OS X} in
-%       order to get a set of fonts that did not issue
-%       errors (bearing in mind we are using
-%       \textsf{fontspec}, so for simplicity
-%       the script deals only with TrueType and
-%       OpenType fonts, not Postscript Type 1 or
-%       Type 3, or font packaging systems like
-%       \emph{Suitcase} or True
-%       Type Collections). I am not aware of any
-%       easily-accessible machine-readable list or
-%       {\smaller API} for identifying normal
-%       text fonts by name (there are commercial
-%       databases but that is outside the scope of
-%       this document class).\par
-% \end{enumerate}
+%   the final cut.  Please report bugs at
+%   \url{https://github.com/borisveytsman/bookshelf}\par 
+%
+%
 % \StopEventually{\label{endcode}%
 %   \clearpage
 %   \newgeometry{left=3cm}%
@@ -1527,7 +1418,7 @@ Package biblatex Warning: Please (re)run Biber on the file:
     \typeout{Trying S=\SIL@S}%
   \else
 %    \end{macrocode}
-% We start with the scale factor $S=1$.  We add |\vskip0pt$ to the
+% We start with the scale factor $S=1$.  We add |\vskip0pt| to the
 % text to set the box depth to zero.
 %    \begin{macrocode}
     \typeout{Text does not fit in one line}%
