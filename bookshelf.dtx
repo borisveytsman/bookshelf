@@ -28,7 +28,7 @@
 \ProvidesFile{bookshelf.dtx}
 %</driver>
 %<class>\NeedsTeXFormat{LaTeX2e}[2017/04/15]
-%<class>\ProvidesClass{bookshelf}[2024/10/24 v1.0
+%<class>\ProvidesClass{bookshelf}[2024/10/05 v1.0
 %<class>  Turn your bibliography into a bookshelf image]
 %<*driver>
 \RequirePackage{fix-cm}% included by default.
@@ -596,7 +596,7 @@
 % of the \BibTeX{} entry names in your {\ttfamily{}.bib}
 % file, but otherwise should work on any modern \TeX{}
 % distribution.\par
-% \par\centering\includegraphics[width=.55\columnwidth]{myshelf.jpg}
+% \par\centering\includegraphics[width=.55\columnwidth]{doc/myshelf.jpg}
 % \end{abstract}
 % \clearpage
 % \tableofcontents
@@ -812,6 +812,10 @@
 % \end{enumerate}
 % This file is included in the distribution.
 %
+% In the previous versions of the ditribution it was created with the
+% from |svgnam.def| database.  The script |svgnam.sh| is retained in
+% the distribution and can be used to recreate the file.
+%
 % \subsection{Producing your bookshelf}
 %
 % \subsubsection{Producing the list of fonts}
@@ -866,6 +870,11 @@
 %
 % Change |sample| to the name of your bibliography, and typeset the
 % file using |lualatex| and | bibtex|.
+%
+% You should see your books nicely placed on the shelves.  The small
+% numbers under each book are meaningful: they are the line numbers in
+% the |allfonts| file.  You may use them if you play ``Guess the
+% font'' game.
 %
 % \subsubsection{Options}
 % The class comes set for making an
@@ -1526,7 +1535,7 @@
 %
 % We define some counters and flags for the font selection
 %    \begin{macrocode}
-\def\SIL@maxfonttries{20}
+\def\SIL@maxfonttries{100}
 \newif\ifSIL@fontfound
 %    \end{macrocode}
 %
@@ -1687,10 +1696,7 @@
       \addtocounter{SIL@loopcount}{1}%
     \fi
   \ifnum\c@SIL@loopcount<\SIL@maxfonttries\repeat
-  \ifSIL@fontfound\else
-     \typeout{Did not find font.  Bailing out with the default}%
-     \input{fontsel/0.tex}\unskip%
-  \fi
+  \ifSIL@fontfound
   \typeout{Set in \SILmfontname}%
 %    \end{macrocode}
 %
@@ -1818,7 +1824,11 @@
       \hfil\vrule height3mm depth6mm width0pt
       \normalfont\scriptsize\theSIL@fontsel\hfil}}%
    }%
-\penalty0}
+   \penalty0
+\else % font not found
+     \typeout{Did not find font for #1--#2}%
+
+\fi}
 %    \end{macrocode}
 % \end{CPK@macro}
 %

@@ -49,5 +49,7 @@ FUNCTION {book} {
 
 FUNCTION {misc} {book}
 
+FUNCTION { default.type } { book }
+
 READ
 ITERATE{call.type$}
