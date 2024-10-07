@@ -4,15 +4,15 @@
 
 =head1 NAME
 
-listallfonts.pl - list all fonts known to LuaTeX with "interesting" features
+bookshelf-listallfonts - list all fonts known to LuaTeX with "interesting" features
 
 =head1 SYNOPSIS
 
-listallfonts.pl [-d] [-f FEATURES_FILE] [-x EXCLUDED_PATTERNS_FILE]
+bookshelf-listallfonts [-d] [-f FEATURES_FILE] [-x EXCLUDED_PATTERNS_FILE]
 
-listallfonts.pl -h
+bookshelf-listallfonts -h
 
-listallfonts.pl -v
+bookshelf-listallfonts -v
 
 =head1 DESCRIPTION
 
@@ -65,7 +65,7 @@ Boris Veytsman, 2024
 
 =head1 LICENSE
 
-MIT license
+LPPL 1.3c
 
 =cut
 
@@ -82,7 +82,7 @@ if (exists($opts{h})) {
     die "$USAGE\n";
 }
 if (exists($opts{v})) {
-    die "$0, Version $VERSION, MIT License\n";
+    die "$0, Version $VERSION, LPPL1.3c license\n";
 }
 
 my $DEBUG=0;

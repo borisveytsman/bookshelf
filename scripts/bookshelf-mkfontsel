@@ -5,11 +5,11 @@
 
 =head1 NAME
 
-mkfontsel.pl - a script to populate C<fontsel> directory and create C<pickfont.tex> file for I<bookshelf> package
+bookshelf-mkfontsel - a script to populate C<fontsel> directory and create C<pickfont.tex> file for I<bookshelf> package
 
 =head1 SYNOPSIS
 
-mkfontsel.pl FONTFILE
+bookshelf-mkfontsel FONTFILE
 
 =head1 DESCRIPTION
 
@@ -38,7 +38,7 @@ Boris Veytsman, 2024
 
 =head1 LICENSE
 
-MIT license
+LPPL 1.3c
 
 =cut
 
@@ -57,7 +57,7 @@ if (exists($opts{h})) {
     die "$USAGE\n";
 }
 if (exists($opts{v})) {
-    die "$0, Version $VERSION, MIT License\n";
+    die "$0, Version $VERSION, LPPL1.3c license\n";
 }
 
 

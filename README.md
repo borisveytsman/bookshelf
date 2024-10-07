@@ -19,8 +19,8 @@ Create your own BibTeX file `sample.tex` and put its name in `spines.tex`:
 
 ``` shell
 luaotfload-tool --update --force
-listallfonts.pl > allfonts
-mkfontsel.pl allfonts
+bookshelf-listallfonts > allfonts
+bookshelf-mkfontsel allfonts
 lualatex spines
 bibtex spines
 lualatex spines

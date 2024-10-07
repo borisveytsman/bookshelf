@@ -3,11 +3,15 @@ PACKAGE = bookshelf
 
 DIRS = doc scripts
 
-all:	${PACKAGE}.cls ${PACKAGE}.pdf
+all:	${PACKAGE}.cls svgnam.tex
 	for dir in ${DIRS}; do cd $$dir; ${MAKE} $@; cd ..; done
 
 %.cls: %.ins %.dtx
 	pdflatex $<
+
+svgnam.tex:
+	./svgnam.sh > svgnam.tex
+	$(RM) svgnam.csv
 
 %.pdf: %.dtx
 	xelatex $<
@@ -23,7 +27,7 @@ all:	${PACKAGE}.cls ${PACKAGE}.pdf
 clean:
 	$(RM) *.aux *.log *.bbl *.blg *.cls *.dvi *~ pickfont.tex \
 	*.bcf *.glo *.gls *.hd *.idx *.ilg *.ind *.our *.xml *.toc \
-	*.out  *.pdf *.tgz
+	*.out  *.pdf *.tgz svgnam.tex svgnam.csv
 	for dir in ${DIRS}; do cd $$dir; ${MAKE} $@; cd ..; done
 
 distclean: clean

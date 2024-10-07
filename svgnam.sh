@@ -12,6 +12,13 @@
 # Original author: Peter Flynn
 #
 
+cat <<EOF
+%
+% This is svgnam.tex file generated from svgnam.def by the script
+% ./svgnam.sh > svgnam.tex
+%
+EOF
+
 PALETTE=`kpsewhich svgnam.def`
 cat $PALETTE |\
     grep '^[A-Z][A-Za-z]*,[\.0-9][0-9]*,[\.0-9][0-9]*,[\.0-9][0-9]*' |\

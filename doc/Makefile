@@ -7,21 +7,21 @@ MAINDOC = bookshelf.pdf
 CLS = bookshelf.cls
 
 PERLSCRIPTS = \
-	../scripts/listallfonts.pl \
-	../scripts/mkfontsel.pl
+	../scripts/bookshelf-listallfonts \
+	../scripts/bookshelf-mkfontsel
 
-MAN = $(notdir ${PERLSCRIPTS:%.pl=%.1})
+MAN = $(notdir ${PERLSCRIPTS:%=%.1})
 
-SCRIPTTEX = $(notdir ${PERLSCRIPTS:%.pl=%.tex})
+SCRIPTTEX = $(notdir ${PERLSCRIPTS:%=%.tex})
 
-SCRIPTPDF = $(notdir ${PERLSCRIPTS:%.pl=%.pdf})
+SCRIPTPDF = $(notdir ${PERLSCRIPTS:%=%.pdf})
 
 all: ${MAN} allfonts ${SAMPLEPDF} ${SCRIPTPDF} ${MAINDOC}
 
-%.1: ../scripts/%.pl
+%.1: ../scripts/%
 	pod2man $< > $@
 
-%.tex: ../scripts/%.pl
+%.tex: ../scripts/%
 	pod2latex -full $< > $@
 
 %.pdf: %.tex bookshelf.cls svgnam.tex pickfont.tex bookshelf.bst
@@ -29,17 +29,25 @@ all: ${MAN} allfonts ${SAMPLEPDF} ${SCRIPTPDF} ${MAINDOC}
 	- bibtex $*
 	lualatex $*
 
+%.pdf: %.dtx spines.pdf bookshelf.cls
+	xelatex $<
+	- biber $*
+	xelatex $<
+	- makeindex -s gind.ist -o $*.ind $*.idx
+	- makeindex -s gglo.ist -o $*.gls $*.glo
+	xelatex $<
+	while ( grep -q 'rerun LaTeX' $*.log) \
+	do xelatex $<; done
+
+bookshelf.dtx: ../bookshelf.dtx
+	cp $< $@
+
 bookshelf.cls: ../bookshelf.cls
 	cp $< $@
 
 bookshelf.bst: ../bookshelf.bst
 	cp $< $@
 
-bookshelf.pdf: ../bookshelf.pdf
-	cp $< $@
-
-../bookshelf.pdf: ../bookshelf.dtx
-	cd .. && ${MAKE} bookshelf.pdf
 
 %.tex: ../%.tex
 	cp $< $@
@@ -48,15 +56,16 @@ bookshelf.pdf: ../bookshelf.pdf
 	cd .. && ${MAKE} bookshelf.cls
 
 pickfont.tex: allfonts
-	../scripts/mkfontsel.pl allfonts
+	../scripts/bookshelf-mkfontsel allfonts
 
 allfonts:
 	luaotfload-tool --update --force
-	../scripts/listallfonts.pl > allfonts
+	../scripts/bookshelf-listallfonts > allfonts
 
 clean:
 	$(RM) *.bst *.cls *.aux *.bbl *.blg *.idx *.toc *.log \
-	pickfont.tex ${SCRIPTTEX}
+	*.bcf *.dtx *.dtx *.glo *.gls *.hd *.ilg *.ind *.out \
+	*.xml pickfont.tex ${SCRIPTTEX} svgnam.tex svgnam.csv
 	$(RM) -r fontsel 
 
 distclean: clean
