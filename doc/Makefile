@@ -55,6 +55,9 @@ bookshelf.bst: ../bookshelf.bst
 ../bookshelf.cls: ../bookshelf.ins ../bookshelf.dtx
 	cd .. && ${MAKE} bookshelf.cls
 
+../svgnam.tex: ../svgnam.sh
+	cd .. && ${MAKE} svgnam.tex
+
 pickfont.tex: allfonts
 	../scripts/bookshelf-mkfontsel allfonts
 

@@ -26,7 +26,12 @@ bibtex spines
 lualatex spines
 ```
 
+## License
+
+LPPL 1.3c
+
 ## Changes
 
 * Version 1.0 2024-10-05. New maintainer. Rewrite of scripts.  Multilanguage processing. Important change: now the package is LuaLaTeX only
 	
+* Version 1.1 2024-10-08. Scripts now support standard switches --help, --man, --version
