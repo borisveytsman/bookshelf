@@ -28,8 +28,10 @@
 \ProvidesFile{bookshelf.dtx}
 %</driver>
 %<class>\NeedsTeXFormat{LaTeX2e}[2017/04/15]
-%<class>\ProvidesClass{bookshelf}[2024/10/05 v1.1
-%<class>  Turn your bibliography into a bookshelf image]
+%<class>\ProvidesClass{bookshelf}
+%<*class>
+[2024/10/05 v1.1 Turn your bibliography into a bookshelf image]
+%</class>
 %<*driver>
 \RequirePackage{fix-cm}% included by default.
 \PassOptionsToPackage{svgnames}{xcolor}% xcolor/dox/hyperref implied
@@ -565,11 +567,10 @@
 % \makeatletter
 % \makeatother
 %
-% \def\fileversion{1.0}
-% \def\filedate{2024-10-05}
+% \GetFileInfo{bookshelf.dtx}
 % \title{The  \textsf{bookshelf} document class\thanks{%
 % This document corresponds to \textsf{bookshelf}
-% \textit{v.}\ \fileversion, dated \filedate.}
+% \fileversion, dated \filedate.}
 % \\[1em]\Large 
 % Turn your bibliography into a bookshelf image}
 % \author{Peter Flynn\\\normalsize Silmaril
@@ -592,9 +593,8 @@
 % \emph{Teams},
 % \emph{WhatsApp} etc video calls. It
 % requires a little preliminary work with the supplied scripts to
-% set up a list of all your fonts, a list of colors, and a list
-% of the \BibTeX{} entry names in your {\ttfamily{}.bib}
-% file, but otherwise should work on any modern \TeX{}
+% set up a list of your fonts and their stylistic variants,
+% but otherwise should work on any modern \TeX{}
 % distribution.\par
 % \par\centering\includegraphics[width=.55\columnwidth, page=4]{spines.pdf}
 % \end{abstract}

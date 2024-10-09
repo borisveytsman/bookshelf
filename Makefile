@@ -27,7 +27,7 @@ svgnam.tex:
 clean:
 	$(RM) *.aux *.log *.bbl *.blg *.cls *.dvi *~ pickfont.tex \
 	*.bcf *.glo *.gls *.hd *.idx *.ilg *.ind *.our *.xml *.toc \
-	*.out  *.pdf *.tgz svgnam.tex svgnam.csv
+	*.out  *.pdf *.tgz svgnam.csv
 	for dir in ${DIRS}; do cd $$dir; ${MAKE} $@; cd ..; done
 
 distclean: clean
