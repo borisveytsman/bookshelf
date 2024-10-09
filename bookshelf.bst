@@ -26,7 +26,7 @@ FUNCTION { format.names }
   #1 'nameptr :=               
   { namesleft }
     {
-      s nameptr "{ff }{vv }{ll}{, jj}" format.name$
+      s nameptr "{ff{ } }{vv{ } }{ll{ }}{, jj}" format.name$
       namesleft #1 >
 	{ " \& " *}
 	{}
