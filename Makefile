@@ -3,14 +3,14 @@ PACKAGE = bookshelf
 
 DIRS = doc scripts
 
-all:	${PACKAGE}.cls svgnam.tex
+all:	${PACKAGE}.cls bookshelf-svgnam.tex
 	for dir in ${DIRS}; do cd $$dir; ${MAKE} $@; cd ..; done
 
 %.cls: %.ins %.dtx
 	pdflatex $<
 
-svgnam.tex:
-	./svgnam.sh > svgnam.tex
+bookshelf-svgnam.tex:
+	./svgnam.sh > bookshelf-svgnam.tex
 	$(RM) svgnam.csv
 
 %.pdf: %.dtx

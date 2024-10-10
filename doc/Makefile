@@ -24,7 +24,7 @@ all: ${MAN} allfonts ${SAMPLEPDF} ${SCRIPTPDF} ${MAINDOC}
 %.tex: ../scripts/%
 	pod2latex -full $< > $@
 
-%.pdf: %.tex bookshelf.cls svgnam.tex pickfont.tex bookshelf.bst
+%.pdf: %.tex bookshelf.cls bookshelf-svgnam.tex pickfont.tex bookshelf.bst
 	lualatex $*
 	- bibtex $*
 	lualatex $*
@@ -55,8 +55,8 @@ bookshelf.bst: ../bookshelf.bst
 ../bookshelf.cls: ../bookshelf.ins ../bookshelf.dtx
 	cd .. && ${MAKE} bookshelf.cls
 
-../svgnam.tex: ../svgnam.sh
-	cd .. && ${MAKE} svgnam.tex
+../bookshelf-svgnam.tex: ../svgnam.sh
+	cd .. && ${MAKE} bookshelf-svgnam.tex
 
 pickfont.tex: allfonts
 	../scripts/bookshelf-mkfontsel allfonts
@@ -68,7 +68,7 @@ allfonts:
 clean:
 	$(RM) *.bst *.cls *.aux *.bbl *.blg *.idx *.toc *.log \
 	*.bcf *.dtx *.dtx *.glo *.gls *.hd *.ilg *.ind *.out \
-	*.xml pickfont.tex ${SCRIPTTEX} svgnam.tex svgnam.csv
+	*.xml pickfont.tex ${SCRIPTTEX} bookshelf-svgnam.tex svgnam.csv
 	$(RM) -r fontsel 
 
 distclean: clean

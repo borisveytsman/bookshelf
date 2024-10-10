@@ -30,7 +30,7 @@
 %<class>\NeedsTeXFormat{LaTeX2e}[2017/04/15]
 %<class>\ProvidesClass{bookshelf}
 %<*class>
-[2024/10/05 v1.1 Turn your bibliography into a bookshelf image]
+[2024/10/09 v1.2 Turn your bibliography into a bookshelf image]
 %</class>
 %<*driver>
 \RequirePackage{fix-cm}% included by default.
@@ -796,7 +796,7 @@
 % A list of all the colors represented by the
 %     {\smaller SVG} palette used by the
 %     \textsf{xcolor} package: the file is called
-%     called {\ttfamily{}svgnam.tex}.
+%     called {\ttfamily{}bookshelf-svgnam.tex}.
 %     This contains three definitions:\par
 % \begin{enumerate}
 % \item the command {\ttfamily{}\textbackslash{}SIL@svgcolname}
@@ -1184,7 +1184,7 @@
 % \subsubsection{Color selection}\label{color}
 % \begin{CPK@counter}{SIL@maxcolno}\label{counter--SIL@maxcolno}
 % This value is set at the end of the file
-%       {\ttfamily{}svgnam.tex}. This is the number of
+%       {\ttfamily{}bookshelf-svgnam.tex}. This is the number of
 %       color names found by the routine in
 %       {\ttfamily{}prepdata.sh} which extracts the color
 %       names.\par
@@ -1192,16 +1192,16 @@
 \newcounter{SIL@maxcolno}
 %    \end{macrocode}
 % \end{CPK@counter}
-% \begin{CPK@file}{svgnam.tex}\label{file--svgnam.tex}
+% \begin{CPK@file}{bookshelf-svgnam.tex}\label{file--bookshelf-svgnam.tex}
 % The preparatory data script
 %       {\ttfamily{}prepdata.sh} retrieves the colors named
 %       in the \textbf{\texttt{svgnames}} option to the
 %       \textsf{xcolor} package and instantiates them
 %       as a \LaTeX{} {\ttfamily{}\textbackslash{}ifcase} list in the file
-%       {\ttfamily{}svgnam.tex} as the command
+%       {\ttfamily{}bookshelf-svgnam.tex} as the command
 %       {\ttfamily{}\textbackslash{}SIL@svgcolname}.\par
 %    \begin{macrocode}
-\input{svgnam.tex}
+\input{bookshelf-svgnam.tex}
 %    \end{macrocode}
 % \end{CPK@file}
 % \begin{CPK@counter}{SIL@loopcount}\label{counter--SIL@loopcount}
@@ -1267,7 +1267,7 @@
 % \begin{CPK@length}{\SIL@bgval}\label{length--SIL@bgval}
 % The values computed by the
 %       {\ttfamily{}prepdata.sh} script and stored in
-%       {\ttfamily{}svgnam.tex} are decimal fractions,
+%       {\ttfamily{}bookshelf-svgnam.tex} are decimal fractions,
 %       to they need to be retrieved as lengths. This is the
 %       background value…\par
 %    \begin{macrocode}
@@ -1588,7 +1588,7 @@
 % Start a loop which will pick two random integers,
 %       one for background and one for foreground colors. Look
 %       these up in the {\ttfamily{}\textbackslash{}SIL@svgcolval} (in
-%       {\ttfamily{}svgnam.tex}) to get the brightness
+%       {\ttfamily{}bookshelf-svgnam.tex}) to get the brightness
 %       values, and calculate the absolute distance between
 %       them.\par
 %    \begin{macrocode}

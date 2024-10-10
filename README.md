@@ -35,3 +35,5 @@ LPPL 1.3c
 * Version 1.0 2024-10-05. New maintainer. Rewrite of scripts.  Multilanguage processing. Important change: now the package is LuaLaTeX only
 	
 * Version 1.1 2024-10-08. Scripts now support standard switches --help, --man, --version
+
+* Version 1.2 2024-10-09. Renamed svgnam.tex to bookshelf-svgnam.tex as requested by TeXLive maintainers
