@@ -192,6 +192,7 @@ if ($excludedPatternsFile) {
 	NAMU-Tryzub
 	\/Fonts\/Supplemental\/
 	NotoSansMyanmar\.ttc
+	Redacted-Regular
 	);
 }
 
