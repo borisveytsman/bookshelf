@@ -54,7 +54,7 @@ TwemojiMozilla
 NAMU-Tryzub
 \/Fonts\/Supplemental\/
 NotoSansMyanmar\.ttc
-FitU_and_lc-UltraExtended
-FitU_and_lc-ExtraWide
+FitU_and_lc-Ultra.*
+FitU_and_lc-Extra.*
 Redacted-Regular
 
